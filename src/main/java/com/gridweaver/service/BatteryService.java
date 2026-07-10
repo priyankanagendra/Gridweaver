@@ -10,15 +10,24 @@ import com.gridweaver.repository.BatteryRepository;
 
 @Service
 public class BatteryService {
-
+	
     @Autowired
     private BatteryRepository batteryRepository;
 
     public Battery saveBattery(Battery battery) {
         return batteryRepository.save(battery);
-    }
+    } 
+    
 
     public List<Battery> getAllBatteries() {
         return batteryRepository.findAll();
+    }
+    public Battery updateBattery(Long id, Battery battery) {
+        battery.setId(id);
+        return batteryRepository.save(battery);
+    }
+
+    public void deleteBattery(Long id) {
+        batteryRepository.deleteById(id);
     }
 }

@@ -60,3 +60,4 @@ public class Battery {
         this.state = state;
     }
 }
+
