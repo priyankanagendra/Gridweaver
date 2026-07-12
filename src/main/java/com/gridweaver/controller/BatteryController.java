@@ -28,4 +28,22 @@ public class BatteryController {
     public List<Battery> getAllBatteries() {
         return batteryService.getAllBatteries();
     }
+    
+    @PutMapping("/{id}")
+    public Battery updateBattery(@PathVariable Long id,
+                                 @RequestBody Battery battery) {
+
+        return batteryService.updateBattery(id, battery);
+    }
+    
+    @DeleteMapping("/{id}")
+    public String deleteBattery(@PathVariable Long id) {
+        batteryService.deleteBattery(id);
+        return "Battery deleted successfully.";
+    }
+    
+    @GetMapping("/{id}")
+    public Battery getBatteryById(@PathVariable Long id) {
+        return batteryService.getBatteryById(id);
+    }
 }
