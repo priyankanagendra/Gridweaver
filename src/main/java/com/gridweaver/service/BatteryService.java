@@ -1,5 +1,6 @@
 package com.gridweaver.service;
 import com.gridweaver.exception.BatteryNotFoundException;
+import com.gridweaver.dto.BatteryDTO;
 
 import java.util.List;
 
@@ -15,15 +16,27 @@ public class BatteryService {
     @Autowired
     private BatteryRepository batteryRepository;
 
-    public Battery saveBattery(Battery battery) {
-        return batteryRepository.save(battery);
+    public BatteryDTO saveBattery(Battery battery) {
+
+        Battery savedBattery = batteryRepository.save(battery);
+
+        return convertToDTO(savedBattery);
     }
 
-    public List<Battery> getAllBatteries() {
-        return batteryRepository.findAll();
+    public List<BatteryDTO> getAllBatteries() {
+
+        List<Battery> batteries = batteryRepository.findAll();
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
     }
     
-    public Battery updateBattery(Long id, Battery updatedBattery) {
+    public BatteryDTO updateBattery(Long id, Battery updatedBattery) {
 
         Battery existingBattery = batteryRepository.findById(id).orElse(null);
 
@@ -34,7 +47,9 @@ public class BatteryService {
             existingBattery.setCapacity(updatedBattery.getCapacity());
             existingBattery.setVoltage(updatedBattery.getVoltage());
 
-            return batteryRepository.save(existingBattery);
+            Battery savedBattery = batteryRepository.save(existingBattery);
+
+            return convertToDTO(savedBattery);
         }
 
         throw new BatteryNotFoundException("Battery not found with ID: " + id);
@@ -50,10 +65,25 @@ public class BatteryService {
             throw new BatteryNotFoundException("Battery not found with ID: " + id);
         }
     }
-    public Battery getBatteryById(Long id) {
+    public BatteryDTO getBatteryById(Long id) {
 
-        return batteryRepository.findById(id)
+        Battery battery = batteryRepository.findById(id)
                 .orElseThrow(() ->
                     new BatteryNotFoundException("Battery not found with ID: " + id));
+
+        return convertToDTO(battery);
+    }
+    
+    private BatteryDTO convertToDTO(Battery battery) {
+
+        BatteryDTO dto = new BatteryDTO();
+
+        dto.setId(battery.getId());
+        dto.setBatteryName(battery.getBatteryName());
+        dto.setBatteryType(battery.getBatteryType());
+        dto.setCapacity(battery.getCapacity());
+        dto.setVoltage(battery.getVoltage());
+
+        return dto;
     }
 }

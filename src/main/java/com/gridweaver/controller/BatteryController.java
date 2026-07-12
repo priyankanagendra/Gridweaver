@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.gridweaver.entity.Battery;
 import com.gridweaver.service.BatteryService;
+import com.gridweaver.dto.BatteryDTO;
 
 @RestController
 @RequestMapping("/battery")
@@ -20,17 +21,17 @@ public class BatteryController {
     private BatteryService batteryService;
 
     @PostMapping
-    public Battery saveBattery(@RequestBody Battery battery) {
+    public BatteryDTO saveBattery(@RequestBody Battery battery) {
         return batteryService.saveBattery(battery);
     }
 
     @GetMapping
-    public List<Battery> getAllBatteries() {
+    public List<BatteryDTO> getAllBatteries() {
         return batteryService.getAllBatteries();
     }
     
     @PutMapping("/{id}")
-    public Battery updateBattery(@PathVariable Long id,
+    public BatteryDTO updateBattery(@PathVariable Long id,
                                  @RequestBody Battery battery) {
 
         return batteryService.updateBattery(id, battery);
@@ -43,7 +44,7 @@ public class BatteryController {
     }
     
     @GetMapping("/{id}")
-    public Battery getBatteryById(@PathVariable Long id) {
+    public BatteryDTO getBatteryById(@PathVariable Long id) {
         return batteryService.getBatteryById(id);
     }
-}
+    }
