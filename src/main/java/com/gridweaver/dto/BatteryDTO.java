@@ -1,11 +1,19 @@
 package com.gridweaver.dto;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 public class BatteryDTO {
 
     private Long id;
+    @NotBlank(message = "Battery name cannot be blank")
     private String batteryName;
+
+    @NotBlank(message = "Battery type cannot be blank")
     private String batteryType;
+
+    @Positive(message = "Capacity must be greater than zero")
     private double capacity;
+
+    @Positive(message = "Voltage must be greater than zero")
     private double voltage;
 
     public BatteryDTO() {

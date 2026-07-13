@@ -16,7 +16,9 @@ public class BatteryService {
     @Autowired
     private BatteryRepository batteryRepository;
 
-    public BatteryDTO saveBattery(Battery battery) {
+    public BatteryDTO saveBattery(BatteryDTO batteryDTO) {
+
+        Battery battery = convertToEntity(batteryDTO);
 
         Battery savedBattery = batteryRepository.save(battery);
 
@@ -85,5 +87,17 @@ public class BatteryService {
         dto.setVoltage(battery.getVoltage());
 
         return dto;
+    }
+    private Battery convertToEntity(BatteryDTO dto) {
+
+        Battery battery = new Battery();
+
+        battery.setId(dto.getId());
+        battery.setBatteryName(dto.getBatteryName());
+        battery.setBatteryType(dto.getBatteryType());
+        battery.setCapacity(dto.getCapacity());
+        battery.setVoltage(dto.getVoltage());
+
+        return battery;
     }
 }

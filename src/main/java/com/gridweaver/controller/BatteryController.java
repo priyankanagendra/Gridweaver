@@ -1,6 +1,7 @@
 package com.gridweaver.controller;
 
 import java.util.List;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class BatteryController {
     private BatteryService batteryService;
 
     @PostMapping
-    public BatteryDTO saveBattery(@RequestBody Battery battery) {
-        return batteryService.saveBattery(battery);
+    public BatteryDTO saveBattery(@Valid @RequestBody BatteryDTO batteryDTO) {
+        return batteryService.saveBattery(batteryDTO);
     }
 
     @GetMapping
