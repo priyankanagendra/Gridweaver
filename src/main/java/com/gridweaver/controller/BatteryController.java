@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import com.gridweaver.entity.Battery;
 import com.gridweaver.service.BatteryService;
 import com.gridweaver.dto.BatteryDTO;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 @RestController
 @RequestMapping("/battery")
 public class BatteryController {
@@ -22,30 +23,43 @@ public class BatteryController {
     private BatteryService batteryService;
 
     @PostMapping
-    public BatteryDTO saveBattery(@Valid @RequestBody BatteryDTO batteryDTO) {
-        return batteryService.saveBattery(batteryDTO);
+    public ResponseEntity<BatteryDTO> saveBattery(@Valid @RequestBody BatteryDTO batteryDTO) {
+
+        BatteryDTO savedBattery = batteryService.saveBattery(batteryDTO);
+
+        return new ResponseEntity<>(savedBattery, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<BatteryDTO> getAllBatteries() {
-        return batteryService.getAllBatteries();
+    public ResponseEntity<List<BatteryDTO>> getAllBatteries() {
+
+        List<BatteryDTO> batteries = batteryService.getAllBatteries();
+
+        return ResponseEntity.ok(batteries);
     }
     
     @PutMapping("/{id}")
-    public BatteryDTO updateBattery(@PathVariable Long id,
-                                 @RequestBody Battery battery) {
+    public ResponseEntity<BatteryDTO> updateBattery(@PathVariable Long id,
+                                                    @RequestBody Battery battery) {
 
-        return batteryService.updateBattery(id, battery);
+        BatteryDTO updatedBattery = batteryService.updateBattery(id, battery);
+
+        return ResponseEntity.ok(updatedBattery);
     }
     
     @DeleteMapping("/{id}")
-    public String deleteBattery(@PathVariable Long id) {
+    public ResponseEntity<String> deleteBattery(@PathVariable Long id) {
+
         batteryService.deleteBattery(id);
-        return "Battery deleted successfully.";
+
+        return ResponseEntity.ok("Battery deleted successfully.");
     }
     
     @GetMapping("/{id}")
-    public BatteryDTO getBatteryById(@PathVariable Long id) {
-        return batteryService.getBatteryById(id);
+    public ResponseEntity<BatteryDTO> getBatteryById(@PathVariable Long id) {
+
+        BatteryDTO battery = batteryService.getBatteryById(id);
+
+        return ResponseEntity.ok(battery);
     }
     }

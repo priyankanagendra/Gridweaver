@@ -40,32 +40,27 @@ public class BatteryService {
     
     public BatteryDTO updateBattery(Long id, Battery updatedBattery) {
 
-        Battery existingBattery = batteryRepository.findById(id).orElse(null);
+    	Battery existingBattery = batteryRepository.findById(id)
+    	        .orElseThrow(() ->
+    	                new BatteryNotFoundException("Battery not found with ID: " + id));
 
-        if (existingBattery != null) {
+    	existingBattery.setBatteryName(updatedBattery.getBatteryName());
+    	existingBattery.setBatteryType(updatedBattery.getBatteryType());
+    	existingBattery.setCapacity(updatedBattery.getCapacity());
+    	existingBattery.setVoltage(updatedBattery.getVoltage());
 
-            existingBattery.setBatteryName(updatedBattery.getBatteryName());
-            existingBattery.setBatteryType(updatedBattery.getBatteryType());
-            existingBattery.setCapacity(updatedBattery.getCapacity());
-            existingBattery.setVoltage(updatedBattery.getVoltage());
+    	Battery savedBattery = batteryRepository.save(existingBattery);
 
-            Battery savedBattery = batteryRepository.save(existingBattery);
-
-            return convertToDTO(savedBattery);
-        }
-
-        throw new BatteryNotFoundException("Battery not found with ID: " + id);
+    	return convertToDTO(savedBattery);
     }
     
     public void deleteBattery(Long id) {
 
-        Battery battery = batteryRepository.findById(id).orElse(null);
+    	Battery battery = batteryRepository.findById(id)
+    	        .orElseThrow(() ->
+    	                new BatteryNotFoundException("Battery not found with ID: " + id));
 
-        if (battery != null) {
-            batteryRepository.deleteById(id);
-        } else {
-            throw new BatteryNotFoundException("Battery not found with ID: " + id);
-        }
+    	batteryRepository.delete(battery);
     }
     public BatteryDTO getBatteryById(Long id) {
 
