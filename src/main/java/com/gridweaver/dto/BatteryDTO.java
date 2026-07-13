@@ -1,36 +1,15 @@
-package com.gridweaver.entity;
+package com.gridweaver.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public class BatteryDTO {
 
-@Entity
-@Data
-@NoArgsConstructor
-public class Battery {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank(message = "Battery name is required")
     private String batteryName;
-
-    @NotBlank(message = "Location is required")
+    
     private String location;
-
-    @Positive(message = "Power must be greater than 0")
     private double power;
-
-    @NotBlank(message = "State is required")
     private String state;
 
-    public Battery() {
+    public BatteryDTO() {
     }
 
     public Long getId() {
