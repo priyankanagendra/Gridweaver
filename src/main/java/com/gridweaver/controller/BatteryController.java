@@ -48,6 +48,12 @@ public class BatteryController {
     public List<BatteryDTO> getAllBatteryDTOs() {
         return batteryService.getAllBatteryDTOs();
     }
+    
+ // Virtual Thread API
+    @GetMapping("/virtual-thread")
+    public String processBatteryTask() throws Exception {
+        return batteryService.processBatteryTask();
+    }
 
     // Update Battery
     @PutMapping("/{id}")
