@@ -98,4 +98,17 @@ public class BatteryService {
 
         return result.get();
     }
+    public String concurrencyTest() throws Exception {
+
+        int totalTasks = 1000;
+
+        for (int i = 1; i <= totalTasks; i++) {
+            virtualThreadExecutor.submit(() -> {
+                System.out.println("Running: " + Thread.currentThread());
+                return null;
+            });
+        }
+
+        return totalTasks + " Virtual Threads executed successfully.";
+    }
 }

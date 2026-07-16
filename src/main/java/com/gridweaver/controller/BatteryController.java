@@ -68,4 +68,8 @@ public class BatteryController {
         batteryService.deleteBattery(id);
         return "Battery deleted successfully";
     }
+    @GetMapping("/concurrency-test")
+    public String concurrencyTest() throws Exception {
+        return batteryService.concurrencyTest();
+    }
 }

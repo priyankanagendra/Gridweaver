@@ -11,6 +11,7 @@ import com.gridweaver.repository.BatteryRepository;
 @Service
 public class BatteryService {
 	
+	
     @Autowired
     private BatteryRepository batteryRepository;
 
