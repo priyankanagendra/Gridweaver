@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.gridweaver.entity.Battery;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 public interface BatteryRepository extends JpaRepository<Battery, Long> {
 
     List<Battery> findByBatteryType(String batteryType);
@@ -27,4 +30,10 @@ public interface BatteryRepository extends JpaRepository<Battery, Long> {
     List<Battery> findByBatteryNameContainingIgnoreCase(String batteryName);
     
     List<Battery> findByBatteryTypeOrderByCapacityAsc(String batteryType);
+
+    @Query("SELECT b FROM Battery b WHERE b.capacity > :capacity")
+    List<Battery> findBatteriesWithCapacityGreaterThan(
+            @Param("capacity") Double capacity);
+    
+    
 }

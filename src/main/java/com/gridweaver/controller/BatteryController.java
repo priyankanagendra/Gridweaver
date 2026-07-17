@@ -194,5 +194,16 @@ public class BatteryController {
         return ResponseEntity.ok(batteries);
     }
     
+    @GetMapping("/jpql/capacity/{capacity}")
+    public ResponseEntity<List<BatteryDTO>> findBatteriesWithCapacityGreaterThan(
+            @PathVariable Double capacity) {
+
+        List<BatteryDTO> batteries =
+                batteryService.findBatteriesWithCapacityGreaterThan(capacity);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    
     
     }

@@ -38,6 +38,9 @@ public interface BatteryService {
     
     List<BatteryDTO> getBatteriesByBatteryTypeOrderByCapacityAsc(String batteryType);
     
+    List<BatteryDTO> findBatteriesWithCapacityGreaterThan(Double capacity);
+    
+    
     BatteryDTO updateBattery(Long id, Battery updatedBattery);
 
     void deleteBattery(Long id);
