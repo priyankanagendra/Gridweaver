@@ -71,6 +71,21 @@ public class BatteryServiceImpl implements BatteryService {
     }
     
     @Override
+    public List<BatteryDTO> getBatteriesByCapacityGreaterThan(Double capacity) {
+
+        List<Battery> batteries =
+                batteryRepository.findByCapacityGreaterThan(capacity);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    @Override
     public BatteryDTO updateBattery(Long id, Battery updatedBattery) {
 
     	Battery existingBattery = batteryRepository.findById(id)

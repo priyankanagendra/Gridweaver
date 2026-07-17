@@ -58,6 +58,17 @@ public class BatteryController {
         return ResponseEntity.ok(batteries);
     }
     
+    @GetMapping("/capacity/{capacity}")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByCapacityGreaterThan(
+            @PathVariable Double capacity) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByCapacityGreaterThan(capacity);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    
     @PutMapping("/{id}")
     public ResponseEntity<BatteryDTO> updateBattery(@PathVariable Long id,
                                                     @RequestBody Battery battery) {
