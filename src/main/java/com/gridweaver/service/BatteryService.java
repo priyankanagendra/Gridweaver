@@ -1,98 +1,20 @@
 package com.gridweaver.service;
-import com.gridweaver.exception.BatteryNotFoundException;
-import com.gridweaver.dto.BatteryDTO;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.gridweaver.dto.BatteryDTO;
 import com.gridweaver.entity.Battery;
-import com.gridweaver.repository.BatteryRepository;
 
-@Service
-public class BatteryService {
 
-    @Autowired
-    private BatteryRepository batteryRepository;
+public interface BatteryService {
 
-    public BatteryDTO saveBattery(BatteryDTO batteryDTO) {
+    BatteryDTO saveBattery(BatteryDTO batteryDTO);
 
-        Battery battery = convertToEntity(batteryDTO);
+    List<BatteryDTO> getAllBatteries();
 
-        Battery savedBattery = batteryRepository.save(battery);
+    BatteryDTO updateBattery(Long id, Battery updatedBattery);
 
-        return convertToDTO(savedBattery);
-    }
+    void deleteBattery(Long id);
 
-    public List<BatteryDTO> getAllBatteries() {
-
-        List<Battery> batteries = batteryRepository.findAll();
-
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
-
-        for (Battery battery : batteries) {
-            batteryDTOs.add(convertToDTO(battery));
-        }
-
-        return batteryDTOs;
-    }
-    
-    public BatteryDTO updateBattery(Long id, Battery updatedBattery) {
-
-    	Battery existingBattery = batteryRepository.findById(id)
-    	        .orElseThrow(() ->
-    	                new BatteryNotFoundException("Battery not found with ID: " + id));
-
-    	existingBattery.setBatteryName(updatedBattery.getBatteryName());
-    	existingBattery.setBatteryType(updatedBattery.getBatteryType());
-    	existingBattery.setCapacity(updatedBattery.getCapacity());
-    	existingBattery.setVoltage(updatedBattery.getVoltage());
-
-    	Battery savedBattery = batteryRepository.save(existingBattery);
-
-    	return convertToDTO(savedBattery);
-    }
-    
-    public void deleteBattery(Long id) {
-
-    	Battery battery = batteryRepository.findById(id)
-    	        .orElseThrow(() ->
-    	                new BatteryNotFoundException("Battery not found with ID: " + id));
-
-    	batteryRepository.delete(battery);
-    }
-    public BatteryDTO getBatteryById(Long id) {
-
-        Battery battery = batteryRepository.findById(id)
-                .orElseThrow(() ->
-                    new BatteryNotFoundException("Battery not found with ID: " + id));
-
-        return convertToDTO(battery);
-    }
-    
-    private BatteryDTO convertToDTO(Battery battery) {
-
-        BatteryDTO dto = new BatteryDTO();
-
-        dto.setId(battery.getId());
-        dto.setBatteryName(battery.getBatteryName());
-        dto.setBatteryType(battery.getBatteryType());
-        dto.setCapacity(battery.getCapacity());
-        dto.setVoltage(battery.getVoltage());
-
-        return dto;
-    }
-    private Battery convertToEntity(BatteryDTO dto) {
-
-        Battery battery = new Battery();
-
-        battery.setId(dto.getId());
-        battery.setBatteryName(dto.getBatteryName());
-        battery.setBatteryType(dto.getBatteryType());
-        battery.setCapacity(dto.getCapacity());
-        battery.setVoltage(dto.getVoltage());
-
-        return battery;
-    }
+    BatteryDTO getBatteryById(Long id);
 }
