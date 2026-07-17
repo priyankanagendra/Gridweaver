@@ -143,4 +143,45 @@ public class BatteryController {
 
         return ResponseEntity.ok(batteries);
     }
+    
+    @GetMapping("/search/{batteryName}")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByBatteryNameContaining(
+            @PathVariable String batteryName) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByBatteryNameContaining(batteryName);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    @GetMapping("/search/start/{batteryName}")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByBatteryNameStartingWith(
+            @PathVariable String batteryName) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByBatteryNameStartingWith(batteryName);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    @GetMapping("/search/end/{batteryName}")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByBatteryNameEndingWith(
+            @PathVariable String batteryName) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByBatteryNameEndingWith(batteryName);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    @GetMapping("/search/ignorecase/{batteryName}")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByBatteryNameContainingIgnoreCase(
+            @PathVariable String batteryName) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByBatteryNameContainingIgnoreCase(batteryName);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
     }

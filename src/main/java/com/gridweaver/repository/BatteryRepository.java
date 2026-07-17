@@ -18,4 +18,13 @@ public interface BatteryRepository extends JpaRepository<Battery, Long> {
     
     List<Battery> findByCapacityBetween(Double minCapacity, Double maxCapacity);
     
+    List<Battery> findByBatteryNameContaining(String batteryName);
+    
+    List<Battery> findByBatteryNameStartingWith(String batteryName);
+    
+    List<Battery> findByBatteryNameEndingWith(String batteryName);
+    
+    List<Battery> findByBatteryNameContainingIgnoreCase(String batteryName);
+    
+    
 }

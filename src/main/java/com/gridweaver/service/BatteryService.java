@@ -28,6 +28,13 @@ public interface BatteryService {
     
     List<BatteryDTO> getBatteriesByCapacityBetween(Double minCapacity, Double maxCapacity);
     
+    List<BatteryDTO> getBatteriesByBatteryNameContaining(String batteryName);
+    
+    List<BatteryDTO> getBatteriesByBatteryNameStartingWith(String batteryName);
+    
+    List<BatteryDTO> getBatteriesByBatteryNameEndingWith(String batteryName);
+    
+    List<BatteryDTO> getBatteriesByBatteryNameContainingIgnoreCase(String batteryName);
     
     BatteryDTO updateBattery(Long id, Battery updatedBattery);
 

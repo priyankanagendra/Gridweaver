@@ -202,6 +202,66 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryDTOs;
     }
     
+    @Override
+    public List<BatteryDTO> getBatteriesByBatteryNameContaining(String batteryName) {
+
+        List<Battery> batteries =
+                batteryRepository.findByBatteryNameContaining(batteryName);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    @Override
+    public List<BatteryDTO> getBatteriesByBatteryNameStartingWith(String batteryName) {
+
+        List<Battery> batteries =
+                batteryRepository.findByBatteryNameStartingWith(batteryName);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    @Override
+    public List<BatteryDTO> getBatteriesByBatteryNameEndingWith(String batteryName) {
+
+        List<Battery> batteries =
+                batteryRepository.findByBatteryNameEndingWith(batteryName);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    @Override
+    public List<BatteryDTO> getBatteriesByBatteryNameContainingIgnoreCase(String batteryName) {
+
+        List<Battery> batteries =
+                batteryRepository.findByBatteryNameContainingIgnoreCase(batteryName);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
     private BatteryDTO convertToDTO(Battery battery) {
 
         BatteryDTO dto = new BatteryDTO();
