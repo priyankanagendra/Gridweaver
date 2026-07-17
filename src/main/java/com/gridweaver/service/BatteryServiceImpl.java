@@ -13,15 +13,20 @@ import com.gridweaver.service.BatteryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import com.gridweaver.repository.CustomerRepository;
+import com.gridweaver.entity.Customer;
 
 @Service
 public class BatteryServiceImpl implements BatteryService {
 
 	private final BatteryRepository batteryRepository;
+	private final CustomerRepository customerRepository;
 
-	public BatteryServiceImpl(BatteryRepository batteryRepository) {
-	    this.batteryRepository = batteryRepository;
-	}
+	public BatteryServiceImpl(BatteryRepository batteryRepository,
+            CustomerRepository customerRepository) {
+this.batteryRepository = batteryRepository;
+this.customerRepository = customerRepository;
+}
     @Override
     public BatteryDTO saveBattery(BatteryDTO batteryDTO) {
 
@@ -292,6 +297,21 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryDTOs;
     }
     
+    @Override
+    public List<BatteryDTO> findBatteriesByCapacityNative(Double capacity) {
+
+        List<Battery> batteries =
+                batteryRepository.findBatteriesByCapacityNative(capacity);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
     
     private BatteryDTO convertToDTO(Battery battery) {
 
@@ -302,6 +322,9 @@ public class BatteryServiceImpl implements BatteryService {
         dto.setBatteryType(battery.getBatteryType());
         dto.setCapacity(battery.getCapacity());
         dto.setVoltage(battery.getVoltage());
+        if (battery.getCustomer() != null) {
+            dto.setCustomerId(battery.getCustomer().getId());
+        }
 
         return dto;
     }
@@ -314,7 +337,16 @@ public class BatteryServiceImpl implements BatteryService {
         battery.setBatteryType(dto.getBatteryType());
         battery.setCapacity(dto.getCapacity());
         battery.setVoltage(dto.getVoltage());
+        if (dto.getCustomerId() != null) {
+
+            Customer customer = customerRepository.findById(dto.getCustomerId())
+                    .orElseThrow(() ->
+                            new RuntimeException("Customer not found"));
+
+            battery.setCustomer(customer);
+        }
 
         return battery;
     }
+    
 }

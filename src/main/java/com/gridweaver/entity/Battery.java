@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 public class Battery {
@@ -19,6 +21,18 @@ public class Battery {
     private Double capacity;
 
     private Double voltage;
+    
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+    
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
     public Battery() {
     }
@@ -62,4 +76,5 @@ public class Battery {
     public void setVoltage(Double voltage) {
         this.voltage = voltage;
     }
+    
 }

@@ -15,6 +15,16 @@ public class BatteryDTO {
 
     @Positive(message = "Voltage must be greater than zero")
     private double voltage;
+    
+    private Long customerId;
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
 
     public BatteryDTO() {
     }

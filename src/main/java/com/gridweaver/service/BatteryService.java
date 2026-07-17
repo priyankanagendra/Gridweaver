@@ -40,6 +40,8 @@ public interface BatteryService {
     
     List<BatteryDTO> findBatteriesWithCapacityGreaterThan(Double capacity);
     
+    List<BatteryDTO> findBatteriesByCapacityNative(Double capacity);
+    
     
     BatteryDTO updateBattery(Long id, Battery updatedBattery);
 

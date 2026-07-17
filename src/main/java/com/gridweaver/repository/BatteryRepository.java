@@ -35,5 +35,9 @@ public interface BatteryRepository extends JpaRepository<Battery, Long> {
     List<Battery> findBatteriesWithCapacityGreaterThan(
             @Param("capacity") Double capacity);
     
+    @Query(value = "SELECT * FROM battery WHERE capacity > :capacity", nativeQuery = true)
+    List<Battery> findBatteriesByCapacityNative(
+            @Param("capacity") Double capacity);
+    
     
 }

@@ -204,6 +204,16 @@ public class BatteryController {
         return ResponseEntity.ok(batteries);
     }
     
+    @GetMapping("/native/capacity/{capacity}")
+    public ResponseEntity<List<BatteryDTO>> findBatteriesByCapacityNative(
+            @PathVariable Double capacity) {
+
+        List<BatteryDTO> batteries =
+                batteryService.findBatteriesByCapacityNative(capacity);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
     
     
     }
