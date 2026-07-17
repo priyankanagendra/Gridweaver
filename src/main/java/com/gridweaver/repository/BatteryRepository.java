@@ -26,5 +26,5 @@ public interface BatteryRepository extends JpaRepository<Battery, Long> {
     
     List<Battery> findByBatteryNameContainingIgnoreCase(String batteryName);
     
-    
+    List<Battery> findByBatteryTypeOrderByCapacityAsc(String batteryType);
 }

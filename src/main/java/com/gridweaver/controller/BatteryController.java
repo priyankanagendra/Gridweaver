@@ -184,4 +184,15 @@ public class BatteryController {
         return ResponseEntity.ok(batteries);
     }
     
+    @GetMapping("/search/type/{batteryType}/capacity/asc")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByBatteryTypeOrderByCapacityAsc(
+            @PathVariable String batteryType) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByBatteryTypeOrderByCapacityAsc(batteryType);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    
     }

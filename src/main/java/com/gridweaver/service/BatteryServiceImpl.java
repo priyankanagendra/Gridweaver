@@ -262,6 +262,22 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryDTOs;
     }
     
+    @Override
+    public List<BatteryDTO> getBatteriesByBatteryTypeOrderByCapacityAsc(String batteryType) {
+
+        List<Battery> batteries =
+                batteryRepository.findByBatteryTypeOrderByCapacityAsc(batteryType);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    
     private BatteryDTO convertToDTO(Battery battery) {
 
         BatteryDTO dto = new BatteryDTO();

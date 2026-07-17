@@ -36,6 +36,8 @@ public interface BatteryService {
     
     List<BatteryDTO> getBatteriesByBatteryNameContainingIgnoreCase(String batteryName);
     
+    List<BatteryDTO> getBatteriesByBatteryTypeOrderByCapacityAsc(String batteryType);
+    
     BatteryDTO updateBattery(Long id, Battery updatedBattery);
 
     void deleteBattery(Long id);
