@@ -9,5 +9,6 @@ import com.gridweaver.entity.Battery;
 public interface BatteryRepository extends JpaRepository<Battery, Long> {
 
     List<Battery> findByBatteryType(String batteryType);
-
+    List<Battery> findByBatteryName(String batteryName);
+    
 }

@@ -13,7 +13,9 @@ public interface BatteryService {
     List<BatteryDTO> getAllBatteries();
     
     List<BatteryDTO> getBatteriesByType(String batteryType);
-
+    
+    List<BatteryDTO> getBatteriesByName(String batteryName);
+    
     BatteryDTO updateBattery(Long id, Battery updatedBattery);
 
     void deleteBattery(Long id);

@@ -48,6 +48,16 @@ public class BatteryController {
         return ResponseEntity.ok(batteries);
     }
     
+    @GetMapping("/name/{batteryName}")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByName(
+            @PathVariable String batteryName) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByName(batteryName);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
     @PutMapping("/{id}")
     public ResponseEntity<BatteryDTO> updateBattery(@PathVariable Long id,
                                                     @RequestBody Battery battery) {
