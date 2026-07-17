@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Sort;
 import com.gridweaver.entity.Battery;
 import com.gridweaver.repository.BatteryRepository;
 import com.gridweaver.service.BatteryService;
@@ -32,6 +32,36 @@ public class BatteryServiceImpl implements BatteryService {
     public List<BatteryDTO> getAllBatteries() {
 
         List<Battery> batteries = batteryRepository.findAll();
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    @Override
+    public List<BatteryDTO> getAllBatteriesSortedByCapacity() {
+
+        List<Battery> batteries =
+                batteryRepository.findAll(Sort.by("capacity"));
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    @Override
+    public List<BatteryDTO> getAllBatteriesSortedByCapacityDesc() {
+
+        List<Battery> batteries =
+                batteryRepository.findAll(Sort.by(Sort.Direction.DESC, "capacity"));
 
         List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
 

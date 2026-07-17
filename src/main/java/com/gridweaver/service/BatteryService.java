@@ -18,6 +18,9 @@ public interface BatteryService {
     
     List<BatteryDTO> getBatteriesByCapacityGreaterThan(Double capacity);
     
+    List<BatteryDTO> getAllBatteriesSortedByCapacity();
+    
+    List<BatteryDTO> getAllBatteriesSortedByCapacityDesc();
     BatteryDTO updateBattery(Long id, Battery updatedBattery);
 
     void deleteBattery(Long id);

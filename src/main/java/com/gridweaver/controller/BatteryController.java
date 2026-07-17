@@ -93,4 +93,23 @@ public class BatteryController {
 
         return ResponseEntity.ok(battery);
     }
+    
+    @GetMapping("/sorted/capacity")
+    public ResponseEntity<List<BatteryDTO>> getAllBatteriesSortedByCapacity() {
+
+        List<BatteryDTO> batteries =
+                batteryService.getAllBatteriesSortedByCapacity();
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    @GetMapping("/sorted/capacity/desc")
+    public ResponseEntity<List<BatteryDTO>> getAllBatteriesSortedByCapacityDesc() {
+
+        List<BatteryDTO> batteries =
+                batteryService.getAllBatteriesSortedByCapacityDesc();
+
+        return ResponseEntity.ok(batteries);
+    }
+    
     }
