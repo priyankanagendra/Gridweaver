@@ -14,4 +14,8 @@ public interface BatteryRepository extends JpaRepository<Battery, Long> {
     
     List<Battery> findByCapacityGreaterThan(Double capacity);
     
+    List<Battery> findByCapacityLessThan(Double capacity);
+    
+    List<Battery> findByCapacityBetween(Double minCapacity, Double maxCapacity);
+    
 }

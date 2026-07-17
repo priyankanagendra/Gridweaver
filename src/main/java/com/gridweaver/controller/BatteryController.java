@@ -112,4 +112,35 @@ public class BatteryController {
         return ResponseEntity.ok(batteries);
     }
     
+    @GetMapping("/page")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByPage(
+            @RequestParam int page,
+            @RequestParam int size) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByPage(page, size);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    @GetMapping("/capacity/less/{capacity}")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByCapacityLessThan(
+            @PathVariable Double capacity) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByCapacityLessThan(capacity);
+
+        return ResponseEntity.ok(batteries);
+    }
+    
+    @GetMapping("/capacity/between/{minCapacity}/{maxCapacity}")
+    public ResponseEntity<List<BatteryDTO>> getBatteriesByCapacityBetween(
+            @PathVariable Double minCapacity,
+            @PathVariable Double maxCapacity) {
+
+        List<BatteryDTO> batteries =
+                batteryService.getBatteriesByCapacityBetween(minCapacity, maxCapacity);
+
+        return ResponseEntity.ok(batteries);
+    }
     }

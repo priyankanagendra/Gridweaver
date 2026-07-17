@@ -10,6 +10,9 @@ import org.springframework.data.domain.Sort;
 import com.gridweaver.entity.Battery;
 import com.gridweaver.repository.BatteryRepository;
 import com.gridweaver.service.BatteryService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class BatteryServiceImpl implements BatteryService {
@@ -116,6 +119,36 @@ public class BatteryServiceImpl implements BatteryService {
     }
     
     @Override
+    public List<BatteryDTO> getBatteriesByCapacityLessThan(Double capacity) {
+
+        List<Battery> batteries =
+                batteryRepository.findByCapacityLessThan(capacity);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    @Override
+    public List<BatteryDTO> getBatteriesByCapacityBetween(Double minCapacity, Double maxCapacity) {
+
+        List<Battery> batteries =
+                batteryRepository.findByCapacityBetween(minCapacity, maxCapacity);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
+    @Override
     public BatteryDTO updateBattery(Long id, Battery updatedBattery) {
 
     	Battery existingBattery = batteryRepository.findById(id)
@@ -131,6 +164,7 @@ public class BatteryServiceImpl implements BatteryService {
 
     	return convertToDTO(savedBattery);
     }
+    
     @Override
     public void deleteBattery(Long id) {
 
@@ -140,6 +174,7 @@ public class BatteryServiceImpl implements BatteryService {
 
     	batteryRepository.delete(battery);
     }
+    
     @Override
     public BatteryDTO getBatteryById(Long id) {
 
@@ -148,6 +183,23 @@ public class BatteryServiceImpl implements BatteryService {
                     new BatteryNotFoundException("Battery not found with ID: " + id));
 
         return convertToDTO(battery);
+    }
+    
+    @Override
+    public List<BatteryDTO> getBatteriesByPage(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Battery> batteryPage =
+                batteryRepository.findAll(pageable);
+
+        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+
+        for (Battery battery : batteryPage.getContent()) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
     }
     
     private BatteryDTO convertToDTO(Battery battery) {
