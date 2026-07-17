@@ -11,6 +11,8 @@ public interface BatteryService {
     BatteryDTO saveBattery(BatteryDTO batteryDTO);
 
     List<BatteryDTO> getAllBatteries();
+    
+    List<BatteryDTO> getBatteriesByType(String batteryType);
 
     BatteryDTO updateBattery(Long id, Battery updatedBattery);
 
