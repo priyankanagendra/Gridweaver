@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "customer")
@@ -20,8 +21,17 @@ public class Customer {
 
     private String phoneNumber;
     
+    @JsonManagedReference
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Battery> batteries;
+    
+    public List<Battery> getBatteries() {
+        return batteries;
+    }
+
+    public void setBatteries(List<Battery> batteries) {
+        this.batteries = batteries;
+    }
 
     public Customer() {
     }
