@@ -7,6 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.gridweaver.enums.BatteryState;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 @Entity
 public class Battery {
@@ -23,6 +26,9 @@ public class Battery {
 
     private Double voltage;
     
+    @Enumerated(EnumType.STRING)
+    private BatteryState state = BatteryState.IDLE;
+    
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -34,6 +40,14 @@ public class Battery {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+    
+    public BatteryState getState() {
+        return state;
+    }
+
+    public void setState(BatteryState state) {
+        this.state = state;
     }
 
     public Battery() {

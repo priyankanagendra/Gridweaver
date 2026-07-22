@@ -1,45 +1,65 @@
 package com.gridweaver.service;
-import com.gridweaver.exception.BatteryNotFoundException;
+
 import com.gridweaver.dto.BatteryDTO;
+import com.gridweaver.entity.Battery;
+import com.gridweaver.entity.Customer;
+import com.gridweaver.exception.BatteryNotFoundException;
+import com.gridweaver.repository.BatteryRepository;
+import com.gridweaver.repository.CustomerRepository;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Sort;
-import com.gridweaver.entity.Battery;
-import com.gridweaver.repository.BatteryRepository;
-import com.gridweaver.service.BatteryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import com.gridweaver.repository.CustomerRepository;
-import com.gridweaver.entity.Customer;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import java.util.concurrent.ExecutorService;
 
 @Service
 public class BatteryServiceImpl implements BatteryService {
 
-	private final BatteryRepository batteryRepository;
-	private final CustomerRepository customerRepository;
+    private static final Logger logger =
+            LoggerFactory.getLogger(BatteryServiceImpl.class);
 
-	public BatteryServiceImpl(BatteryRepository batteryRepository,
-            CustomerRepository customerRepository) {
-this.batteryRepository = batteryRepository;
-this.customerRepository = customerRepository;
+    private final BatteryRepository batteryRepository;
+    private final CustomerRepository customerRepository;
+    private final ExecutorService virtualThreadExecutor;
+    
+    public BatteryServiceImpl(BatteryRepository batteryRepository,
+            CustomerRepository customerRepository,
+            ExecutorService virtualThreadExecutor) {
+
+		this.batteryRepository = batteryRepository;
+		this.customerRepository = customerRepository;
+		this.virtualThreadExecutor = virtualThreadExecutor;
 }
+
     @Override
     public BatteryDTO saveBattery(BatteryDTO batteryDTO) {
+
+        logger.info("Saving battery: {}", batteryDTO.getBatteryName());
 
         Battery battery = convertToEntity(batteryDTO);
 
         Battery savedBattery = batteryRepository.save(battery);
 
+        logger.info("Battery saved successfully with ID: {}", savedBattery.getId());
+
         return convertToDTO(savedBattery);
     }
+
     @Override
     public List<BatteryDTO> getAllBatteries() {
 
+        logger.info("Fetching all batteries from database");
+
         List<Battery> batteries = batteryRepository.findAll();
+
+        logger.info("Found {} batteries in database", batteries.size());
 
         List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
 
@@ -49,7 +69,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getAllBatteriesSortedByCapacity() {
 
@@ -64,12 +84,13 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getAllBatteriesSortedByCapacityDesc() {
 
         List<Battery> batteries =
-                batteryRepository.findAll(Sort.by(Sort.Direction.DESC, "capacity"));
+                batteryRepository.findAll(
+                        Sort.by(Sort.Direction.DESC, "capacity"));
 
         List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
 
@@ -79,11 +100,12 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByType(String batteryType) {
 
-        List<Battery> batteries = batteryRepository.findByBatteryType(batteryType);
+        List<Battery> batteries =
+                batteryRepository.findByBatteryType(batteryType);
 
         List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
 
@@ -93,11 +115,12 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByName(String batteryName) {
 
-        List<Battery> batteries = batteryRepository.findByBatteryName(batteryName);
+        List<Battery> batteries =
+                batteryRepository.findByBatteryName(batteryName);
 
         List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
 
@@ -107,7 +130,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByCapacityGreaterThan(Double capacity) {
 
@@ -122,7 +145,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByCapacityLessThan(Double capacity) {
 
@@ -137,9 +160,10 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
-    public List<BatteryDTO> getBatteriesByCapacityBetween(Double minCapacity, Double maxCapacity) {
+    public List<BatteryDTO> getBatteriesByCapacityBetween(Double minCapacity,
+                                                          Double maxCapacity) {
 
         List<Battery> batteries =
                 batteryRepository.findByCapacityBetween(minCapacity, maxCapacity);
@@ -152,40 +176,56 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public BatteryDTO updateBattery(Long id, Battery updatedBattery) {
 
-    	Battery existingBattery = batteryRepository.findById(id)
-    	        .orElseThrow(() ->
-    	                new BatteryNotFoundException("Battery not found with ID: " + id));
+        Battery existingBattery = batteryRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.warn("Battery not found with ID: {}", id);
+                    return new BatteryNotFoundException(
+                            "Battery not found with ID: " + id);
+                });
 
-    	existingBattery.setBatteryName(updatedBattery.getBatteryName());
-    	existingBattery.setBatteryType(updatedBattery.getBatteryType());
-    	existingBattery.setCapacity(updatedBattery.getCapacity());
-    	existingBattery.setVoltage(updatedBattery.getVoltage());
+        existingBattery.setBatteryName(updatedBattery.getBatteryName());
+        existingBattery.setBatteryType(updatedBattery.getBatteryType());
+        existingBattery.setCapacity(updatedBattery.getCapacity());
+        existingBattery.setVoltage(updatedBattery.getVoltage());
 
-    	Battery savedBattery = batteryRepository.save(existingBattery);
+        Battery savedBattery = batteryRepository.save(existingBattery);
 
-    	return convertToDTO(savedBattery);
+        logger.info("Battery updated successfully with ID: {}",
+                savedBattery.getId());
+
+        return convertToDTO(savedBattery);
     }
-    
+
     @Override
     public void deleteBattery(Long id) {
 
-    	Battery battery = batteryRepository.findById(id)
-    	        .orElseThrow(() ->
-    	                new BatteryNotFoundException("Battery not found with ID: " + id));
+        Battery battery = batteryRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.warn("Attempt to delete non-existing battery with ID: {}", id);
+                    return new BatteryNotFoundException(
+                            "Battery not found with ID: " + id);
+                });
 
-    	batteryRepository.delete(battery);
+        batteryRepository.delete(battery);
+
+        logger.info("Battery deleted successfully with ID: {}", id);
     }
-    
+
     @Override
     public BatteryDTO getBatteryById(Long id) {
 
         Battery battery = batteryRepository.findById(id)
-                .orElseThrow(() ->
-                    new BatteryNotFoundException("Battery not found with ID: " + id));
+                .orElseThrow(() -> {
+                    logger.warn("Battery lookup failed for ID: {}", id);
+                    return new BatteryNotFoundException(
+                            "Battery not found with ID: " + id);
+                });
+
+        logger.info("Battery retrieved successfully with ID: {}", id);
 
         return convertToDTO(battery);
     }
@@ -206,7 +246,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByBatteryNameContaining(String batteryName) {
 
@@ -221,7 +261,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByBatteryNameStartingWith(String batteryName) {
 
@@ -236,7 +276,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByBatteryNameEndingWith(String batteryName) {
 
@@ -251,7 +291,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByBatteryNameContainingIgnoreCase(String batteryName) {
 
@@ -266,7 +306,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByBatteryTypeOrderByCapacityAsc(String batteryType) {
 
@@ -281,7 +321,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> findBatteriesWithCapacityGreaterThan(Double capacity) {
 
@@ -296,7 +336,7 @@ this.customerRepository = customerRepository;
 
         return batteryDTOs;
     }
-    
+
     @Override
     public List<BatteryDTO> findBatteriesByCapacityNative(Double capacity) {
 
@@ -312,7 +352,6 @@ this.customerRepository = customerRepository;
         return batteryDTOs;
     }
     
-    
     private BatteryDTO convertToDTO(Battery battery) {
 
         BatteryDTO dto = new BatteryDTO();
@@ -322,12 +361,14 @@ this.customerRepository = customerRepository;
         dto.setBatteryType(battery.getBatteryType());
         dto.setCapacity(battery.getCapacity());
         dto.setVoltage(battery.getVoltage());
+
         if (battery.getCustomer() != null) {
             dto.setCustomerId(battery.getCustomer().getId());
         }
 
         return dto;
     }
+
     private Battery convertToEntity(BatteryDTO dto) {
 
         Battery battery = new Battery();
@@ -337,16 +378,19 @@ this.customerRepository = customerRepository;
         battery.setBatteryType(dto.getBatteryType());
         battery.setCapacity(dto.getCapacity());
         battery.setVoltage(dto.getVoltage());
+
         if (dto.getCustomerId() != null) {
 
             Customer customer = customerRepository.findById(dto.getCustomerId())
-                    .orElseThrow(() ->
-                            new RuntimeException("Customer not found"));
+                    .orElseThrow(() -> {
+                        logger.warn("Customer not found with ID: {}", dto.getCustomerId());
+                        return new RuntimeException("Customer not found");
+                    });
 
             battery.setCustomer(customer);
         }
 
         return battery;
     }
-    
+
 }

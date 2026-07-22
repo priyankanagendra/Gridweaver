@@ -11,12 +11,16 @@ import com.gridweaver.service.BatteryService;
 import com.gridweaver.dto.BatteryDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/battery")
 public class BatteryController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(BatteryController.class);
 	public BatteryController() {
-	    System.out.println("BatteryController Loaded");
+		logger.info("BatteryController Loaded");
 	}
 
     @Autowired
@@ -25,7 +29,11 @@ public class BatteryController {
     @PostMapping
     public ResponseEntity<BatteryDTO> saveBattery(@Valid @RequestBody BatteryDTO batteryDTO) {
 
+        logger.info("Received request to save battery: {}", batteryDTO.getBatteryName());
+
         BatteryDTO savedBattery = batteryService.saveBattery(batteryDTO);
+
+        logger.info("Battery saved successfully with ID: {}", savedBattery.getId());
 
         return new ResponseEntity<>(savedBattery, HttpStatus.CREATED);
     }
@@ -33,7 +41,11 @@ public class BatteryController {
     @GetMapping
     public ResponseEntity<List<BatteryDTO>> getAllBatteries() {
 
+        logger.info("Received request to fetch all batteries");
+
         List<BatteryDTO> batteries = batteryService.getAllBatteries();
+
+        logger.info("Fetched {} batteries", batteries.size());
 
         return ResponseEntity.ok(batteries);
     }
