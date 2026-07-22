@@ -25,7 +25,7 @@ public class TelemetryController {
 
         batteryTelemetryService.processBatteryTelemetry(batteryId);
 
-        stateMachineService.printCurrentState();
+        stateMachineService.printCurrentState(batteryId);
 
         return "Telemetry received for Battery ID: " + batteryId;
     }

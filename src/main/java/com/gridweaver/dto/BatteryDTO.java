@@ -1,9 +1,14 @@
 package com.gridweaver.dto;
+
+import com.gridweaver.enums.BatteryState;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+
 public class BatteryDTO {
 
     private Long id;
+
     @NotBlank(message = "Battery name cannot be blank")
     private String batteryName;
 
@@ -15,16 +20,10 @@ public class BatteryDTO {
 
     @Positive(message = "Voltage must be greater than zero")
     private double voltage;
-    
+
+    private BatteryState state;
+
     private Long customerId;
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
 
     public BatteryDTO() {
     }
@@ -67,5 +66,21 @@ public class BatteryDTO {
 
     public void setVoltage(double voltage) {
         this.voltage = voltage;
+    }
+
+    public BatteryState getState() {
+        return state;
+    }
+
+    public void setState(BatteryState state) {
+        this.state = state;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 }

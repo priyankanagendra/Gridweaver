@@ -8,6 +8,8 @@ import com.gridweaver.repository.BatteryRepository;
 import com.gridweaver.repository.CustomerRepository;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.concurrent.ExecutorService;
 
 @Service
 public class BatteryServiceImpl implements BatteryService {
@@ -28,15 +29,16 @@ public class BatteryServiceImpl implements BatteryService {
     private final BatteryRepository batteryRepository;
     private final CustomerRepository customerRepository;
     private final ExecutorService virtualThreadExecutor;
-    
-    public BatteryServiceImpl(BatteryRepository batteryRepository,
+
+    public BatteryServiceImpl(
+            BatteryRepository batteryRepository,
             CustomerRepository customerRepository,
             ExecutorService virtualThreadExecutor) {
 
-		this.batteryRepository = batteryRepository;
-		this.customerRepository = customerRepository;
-		this.virtualThreadExecutor = virtualThreadExecutor;
-}
+        this.batteryRepository = batteryRepository;
+        this.customerRepository = customerRepository;
+        this.virtualThreadExecutor = virtualThreadExecutor;
+    }
 
     @Override
     public BatteryDTO saveBattery(BatteryDTO batteryDTO) {
@@ -47,7 +49,8 @@ public class BatteryServiceImpl implements BatteryService {
 
         Battery savedBattery = batteryRepository.save(battery);
 
-        logger.info("Battery saved successfully with ID: {}", savedBattery.getId());
+        logger.info("Battery saved successfully with ID: {}",
+                savedBattery.getId());
 
         return convertToDTO(savedBattery);
     }
@@ -59,9 +62,10 @@ public class BatteryServiceImpl implements BatteryService {
 
         List<Battery> batteries = batteryRepository.findAll();
 
-        logger.info("Found {} batteries in database", batteries.size());
+        logger.info("Found {} batteries in database",
+                batteries.size());
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -74,9 +78,10 @@ public class BatteryServiceImpl implements BatteryService {
     public List<BatteryDTO> getAllBatteriesSortedByCapacity() {
 
         List<Battery> batteries =
-                batteryRepository.findAll(Sort.by("capacity"));
+                batteryRepository.findAll(
+                        Sort.by("capacity"));
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -90,9 +95,11 @@ public class BatteryServiceImpl implements BatteryService {
 
         List<Battery> batteries =
                 batteryRepository.findAll(
-                        Sort.by(Sort.Direction.DESC, "capacity"));
+                        Sort.by(
+                                Sort.Direction.DESC,
+                                "capacity"));
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -105,9 +112,10 @@ public class BatteryServiceImpl implements BatteryService {
     public List<BatteryDTO> getBatteriesByType(String batteryType) {
 
         List<Battery> batteries =
-                batteryRepository.findByBatteryType(batteryType);
+                batteryRepository.findByBatteryType(
+                        batteryType);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -120,24 +128,10 @@ public class BatteryServiceImpl implements BatteryService {
     public List<BatteryDTO> getBatteriesByName(String batteryName) {
 
         List<Battery> batteries =
-                batteryRepository.findByBatteryName(batteryName);
+                batteryRepository.findByBatteryName(
+                        batteryName);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
-
-        for (Battery battery : batteries) {
-            batteryDTOs.add(convertToDTO(battery));
-        }
-
-        return batteryDTOs;
-    }
-
-    @Override
-    public List<BatteryDTO> getBatteriesByCapacityGreaterThan(Double capacity) {
-
-        List<Battery> batteries =
-                batteryRepository.findByCapacityGreaterThan(capacity);
-
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -147,12 +141,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> getBatteriesByCapacityLessThan(Double capacity) {
+    public List<BatteryDTO> getBatteriesByCapacityGreaterThan(
+            Double capacity) {
 
         List<Battery> batteries =
-                batteryRepository.findByCapacityLessThan(capacity);
+                batteryRepository.findByCapacityGreaterThan(
+                        capacity);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -162,13 +158,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> getBatteriesByCapacityBetween(Double minCapacity,
-                                                          Double maxCapacity) {
+    public List<BatteryDTO> getBatteriesByCapacityLessThan(
+            Double capacity) {
 
         List<Battery> batteries =
-                batteryRepository.findByCapacityBetween(minCapacity, maxCapacity);
+                batteryRepository.findByCapacityLessThan(
+                        capacity);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -177,6 +174,25 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryDTOs;
     }
 
+    @Override
+    public List<BatteryDTO> getBatteriesByCapacityBetween(
+            Double minCapacity,
+            Double maxCapacity) {
+
+        List<Battery> batteries =
+                batteryRepository.findByCapacityBetween(
+                        minCapacity,
+                        maxCapacity);
+
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
+
+        for (Battery battery : batteries) {
+            batteryDTOs.add(convertToDTO(battery));
+        }
+
+        return batteryDTOs;
+    }
+    
     @Override
     public BatteryDTO updateBattery(Long id, Battery updatedBattery) {
 
@@ -205,7 +221,9 @@ public class BatteryServiceImpl implements BatteryService {
 
         Battery battery = batteryRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.warn("Attempt to delete non-existing battery with ID: {}", id);
+                    logger.warn(
+                            "Attempt to delete non-existing battery with ID: {}",
+                            id);
                     return new BatteryNotFoundException(
                             "Battery not found with ID: " + id);
                 });
@@ -229,7 +247,7 @@ public class BatteryServiceImpl implements BatteryService {
 
         return convertToDTO(battery);
     }
-    
+
     @Override
     public List<BatteryDTO> getBatteriesByPage(int page, int size) {
 
@@ -238,7 +256,7 @@ public class BatteryServiceImpl implements BatteryService {
         Page<Battery> batteryPage =
                 batteryRepository.findAll(pageable);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteryPage.getContent()) {
             batteryDTOs.add(convertToDTO(battery));
@@ -248,12 +266,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> getBatteriesByBatteryNameContaining(String batteryName) {
+    public List<BatteryDTO> getBatteriesByBatteryNameContaining(
+            String batteryName) {
 
         List<Battery> batteries =
-                batteryRepository.findByBatteryNameContaining(batteryName);
+                batteryRepository.findByBatteryNameContaining(
+                        batteryName);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -263,12 +283,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> getBatteriesByBatteryNameStartingWith(String batteryName) {
+    public List<BatteryDTO> getBatteriesByBatteryNameStartingWith(
+            String batteryName) {
 
         List<Battery> batteries =
-                batteryRepository.findByBatteryNameStartingWith(batteryName);
+                batteryRepository.findByBatteryNameStartingWith(
+                        batteryName);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -278,12 +300,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> getBatteriesByBatteryNameEndingWith(String batteryName) {
+    public List<BatteryDTO> getBatteriesByBatteryNameEndingWith(
+            String batteryName) {
 
         List<Battery> batteries =
-                batteryRepository.findByBatteryNameEndingWith(batteryName);
+                batteryRepository.findByBatteryNameEndingWith(
+                        batteryName);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -293,12 +317,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> getBatteriesByBatteryNameContainingIgnoreCase(String batteryName) {
+    public List<BatteryDTO> getBatteriesByBatteryNameContainingIgnoreCase(
+            String batteryName) {
 
         List<Battery> batteries =
-                batteryRepository.findByBatteryNameContainingIgnoreCase(batteryName);
+                batteryRepository.findByBatteryNameContainingIgnoreCase(
+                        batteryName);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -308,12 +334,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> getBatteriesByBatteryTypeOrderByCapacityAsc(String batteryType) {
+    public List<BatteryDTO> getBatteriesByBatteryTypeOrderByCapacityAsc(
+            String batteryType) {
 
         List<Battery> batteries =
-                batteryRepository.findByBatteryTypeOrderByCapacityAsc(batteryType);
+                batteryRepository.findByBatteryTypeOrderByCapacityAsc(
+                        batteryType);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -323,12 +351,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> findBatteriesWithCapacityGreaterThan(Double capacity) {
+    public List<BatteryDTO> findBatteriesWithCapacityGreaterThan(
+            Double capacity) {
 
         List<Battery> batteries =
-                batteryRepository.findBatteriesWithCapacityGreaterThan(capacity);
+                batteryRepository.findBatteriesWithCapacityGreaterThan(
+                        capacity);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -338,12 +368,14 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public List<BatteryDTO> findBatteriesByCapacityNative(Double capacity) {
+    public List<BatteryDTO> findBatteriesByCapacityNative(
+            Double capacity) {
 
         List<Battery> batteries =
-                batteryRepository.findBatteriesByCapacityNative(capacity);
+                batteryRepository.findBatteriesByCapacityNative(
+                        capacity);
 
-        List<BatteryDTO> batteryDTOs = new java.util.ArrayList<>();
+        List<BatteryDTO> batteryDTOs = new ArrayList<>();
 
         for (Battery battery : batteries) {
             batteryDTOs.add(convertToDTO(battery));
@@ -362,6 +394,9 @@ public class BatteryServiceImpl implements BatteryService {
         dto.setCapacity(battery.getCapacity());
         dto.setVoltage(battery.getVoltage());
 
+        // Added for State Machine
+        dto.setState(battery.getState());
+
         if (battery.getCustomer() != null) {
             dto.setCustomerId(battery.getCustomer().getId());
         }
@@ -379,6 +414,9 @@ public class BatteryServiceImpl implements BatteryService {
         battery.setCapacity(dto.getCapacity());
         battery.setVoltage(dto.getVoltage());
 
+        // Added for State Machine
+        battery.setState(dto.getState());
+
         if (dto.getCustomerId() != null) {
 
             Customer customer = customerRepository.findById(dto.getCustomerId())
@@ -392,5 +430,7 @@ public class BatteryServiceImpl implements BatteryService {
 
         return battery;
     }
-
+    
+   
+    
 }
