@@ -2,6 +2,7 @@ package com.gridweaver.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class StateMachineService {
 
         stateMachine.start();
 
-        logger.info("Current State: {}", stateMachine.getState().getId());
+        logger.info("Current State : {}", stateMachine.getState().getId());
+
+        stateMachine.sendEvent(
+                MessageBuilder.withPayload(BatteryEvent.START_CHARGING).build());
+
+        logger.info("New State : {}", stateMachine.getState().getId());
     }
 }
