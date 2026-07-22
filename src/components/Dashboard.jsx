@@ -11,7 +11,11 @@ import {
 
 export default function Dashboard() {
   const { overview, connected } = useGridSocket();
+<<<<<<< HEAD
   const [mapMode, setMapMode] = useState('grid'); 
+=======
+  const [mapMode, setMapMode] = useState('grid'); // 'grid' | 'heatmap'
+>>>>>>> 14f7baa0822bda8123074460fd6047b34eb25797
 
   const now = new Date();
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });

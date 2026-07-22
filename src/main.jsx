@@ -1,3 +1,18 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "leaflet/dist/leaflet.css";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+=======
+>>>>>>> 14f7baa0822bda8123074460fd6047b34eb25797
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
@@ -8,3 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </React.StrictMode>
 );
+<<<<<<< HEAD
+=======
+>>>>>>> a3d1a64d929a7b5891935936326067f140df09f8
+>>>>>>> 14f7baa0822bda8123074460fd6047b34eb25797
