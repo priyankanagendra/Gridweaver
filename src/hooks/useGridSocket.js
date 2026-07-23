@@ -25,7 +25,7 @@ export function useGridSocket() {
           if (!cancelled) setOverview(data);
         }
       } catch (_) {
-        /* backend not reachable yet */
+        
       }
     }
 
