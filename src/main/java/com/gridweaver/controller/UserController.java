@@ -9,6 +9,8 @@ import com.gridweaver.dto.UserDTO;
 import com.gridweaver.service.UserService;
 
 import jakarta.validation.Valid;
+import com.gridweaver.dto.LoginRequest;
+import com.gridweaver.dto.LoginResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -28,5 +30,14 @@ public class UserController {
         UserDTO savedUser = userService.registerUser(userDTO);
 
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> loginUser(
+            @Valid @RequestBody LoginRequest loginRequest) {
+
+        LoginResponse response = userService.loginUser(loginRequest);
+
+        return ResponseEntity.ok(response);
     }
 }
