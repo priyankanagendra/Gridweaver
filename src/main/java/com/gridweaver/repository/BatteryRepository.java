@@ -6,3 +6,8 @@ import com.gridweaver.entity.Battery;
 public interface BatteryRepository extends JpaRepository<Battery, Long> {
 
 }
+
+
+
+
+

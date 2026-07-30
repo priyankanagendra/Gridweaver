@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Battery {
-
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +23,8 @@ public class Battery {
 
     @NotBlank(message = "Location is required")
     private String location;
+    
+    
 
     @Positive(message = "Power must be greater than 0")
     private double power;
@@ -73,3 +75,8 @@ public class Battery {
         this.state = state;
     }
 }
+
+
+
+
+

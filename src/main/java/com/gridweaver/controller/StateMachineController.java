@@ -16,6 +16,8 @@ public class StateMachineController {
     public String chargeBattery() {
         return stateMachineService.startCharging();
     }
+    
+    
 
     @GetMapping("/state/discharge")
     public String dischargeBattery() {

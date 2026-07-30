@@ -22,9 +22,20 @@ public class BatteryService {
     @Autowired
     private ExecutorService virtualThreadExecutor;
 
+    // Inject Kafka producer
+    @Autowired
+    private KafkaproducerService kafkaProducerService;
+
     // Save Battery
     public Battery saveBattery(Battery battery) {
-        return batteryRepository.save(battery);
+
+        Battery savedBattery = batteryRepository.save(battery);
+
+        // Send message to Kafka
+        kafkaProducerService.sendMessage(
+                "Battery Added : " + savedBattery.getBatteryName());
+
+        return savedBattery;
     }
 
     // Get All Batteries
@@ -49,7 +60,13 @@ public class BatteryService {
         existingBattery.setPower(battery.getPower());
         existingBattery.setState(battery.getState());
 
-        return batteryRepository.save(existingBattery);
+        Battery updatedBattery = batteryRepository.save(existingBattery);
+
+        // Send Kafka message
+        kafkaProducerService.sendMessage(
+                "Battery Updated : " + updatedBattery.getBatteryName());
+
+        return updatedBattery;
     }
 
     // Delete Battery
@@ -59,6 +76,10 @@ public class BatteryService {
                 .orElseThrow(() -> new BatteryNotFoundException("Battery not found with id: " + id));
 
         batteryRepository.delete(battery);
+
+        // Send Kafka message
+        kafkaProducerService.sendMessage(
+                "Battery Deleted : " + battery.getBatteryName());
     }
 
     // Get All Battery DTOs
@@ -98,6 +119,8 @@ public class BatteryService {
 
         return result.get();
     }
+
+    // Virtual Thread Concurrency Test
     public String concurrencyTest() throws Exception {
 
         int totalTasks = 1000;
