@@ -4,10 +4,10 @@ public class BatteryDTO {
 
     private Long id;
     private String batteryName;
-    
     private String location;
     private double power;
     private String state;
+    private String zone;
 
     public BatteryDTO() {
     }
@@ -50,5 +50,13 @@ public class BatteryDTO {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
     }
 }

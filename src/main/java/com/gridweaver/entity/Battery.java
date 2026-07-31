@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Battery {
-	
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,8 +23,9 @@ public class Battery {
 
     @NotBlank(message = "Location is required")
     private String location;
-    
-    
+
+    @NotBlank(message = "Zone is required")
+    private String zone;
 
     @Positive(message = "Power must be greater than 0")
     private double power;
@@ -59,6 +60,14 @@ public class Battery {
         this.location = location;
     }
 
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
+    }
+
     public double getPower() {
         return power;
     }
@@ -75,7 +84,41 @@ public class Battery {
         this.state = state;
     }
 }
+/*package com.gridweaver.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@NoArgsConstructor
+public class Battery {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "Battery name is required")
+    private String batteryName;
+
+    @NotBlank(message = "Location is required")
+    private String location;
+
+    @NotBlank(message = "Zone is required")
+    private String zone;
+
+    @Positive(message = "Power must be greater than 0")
+    private double power;
+
+    @NotBlank(message = "State is required")
+    private String state;
+}*/
 
 
 

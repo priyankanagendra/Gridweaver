@@ -22,7 +22,6 @@ public class BatteryService {
     @Autowired
     private ExecutorService virtualThreadExecutor;
 
-    // Inject Kafka producer
     @Autowired
     private KafkaproducerService kafkaProducerService;
 
@@ -31,7 +30,6 @@ public class BatteryService {
 
         Battery savedBattery = batteryRepository.save(battery);
 
-        // Send message to Kafka
         kafkaProducerService.sendMessage(
                 "Battery Added : " + savedBattery.getBatteryName());
 
@@ -57,12 +55,12 @@ public class BatteryService {
 
         existingBattery.setBatteryName(battery.getBatteryName());
         existingBattery.setLocation(battery.getLocation());
+        existingBattery.setZone(battery.getZone());
         existingBattery.setPower(battery.getPower());
         existingBattery.setState(battery.getState());
-
+       
         Battery updatedBattery = batteryRepository.save(existingBattery);
 
-        // Send Kafka message
         kafkaProducerService.sendMessage(
                 "Battery Updated : " + updatedBattery.getBatteryName());
 
@@ -77,7 +75,6 @@ public class BatteryService {
 
         batteryRepository.delete(battery);
 
-        // Send Kafka message
         kafkaProducerService.sendMessage(
                 "Battery Deleted : " + battery.getBatteryName());
     }
@@ -99,8 +96,10 @@ public class BatteryService {
         dto.setId(battery.getId());
         dto.setBatteryName(battery.getBatteryName());
         dto.setLocation(battery.getLocation());
+        dto.setZone(battery.getZone());
         dto.setPower(battery.getPower());
         dto.setState(battery.getState());
+
 
         return dto;
     }

@@ -16,6 +16,7 @@ public class Battery {
     private String location;
     private double power;
     private String state;
+    private String zone;
 
     public Battery() {
     }
@@ -59,5 +60,12 @@ public class Battery {
     public void setState(String state) {
         this.state = state;
     }
-}
 
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
+    }
+}
