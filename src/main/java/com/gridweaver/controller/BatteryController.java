@@ -1,15 +1,9 @@
 package com.gridweaver.controller;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.gridweaver.dto.BatteryDTO;
 import com.gridweaver.entity.Battery;
@@ -20,6 +14,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/battery")
 public class BatteryController {
+
     @Autowired
     private BatteryService batteryService;
 
@@ -46,12 +41,6 @@ public class BatteryController {
     public List<BatteryDTO> getAllBatteryDTOs() {
         return batteryService.getAllBatteryDTOs();
     }
-    
- // Virtual Thread API
-    @GetMapping("/virtual-thread")
-    public String processBatteryTask() throws Exception {
-        return batteryService.processBatteryTask();
-    }
 
     // Update Battery
     @PutMapping("/{id}")
@@ -66,12 +55,16 @@ public class BatteryController {
         batteryService.deleteBattery(id);
         return "Battery deleted successfully";
     }
+
+    // Virtual Thread Demo
+    @GetMapping("/virtual-thread")
+    public String processBatteryTask() throws Exception {
+        return batteryService.processBatteryTask();
+    }
+
+    // Virtual Thread Concurrency Test
     @GetMapping("/concurrency-test")
     public String concurrencyTest() throws Exception {
         return batteryService.concurrencyTest();
     }
 }
-
-
-
-		
