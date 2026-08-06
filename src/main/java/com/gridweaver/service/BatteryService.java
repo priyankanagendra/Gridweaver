@@ -25,6 +25,9 @@ public class BatteryService {
     @Autowired
     private KafkaproducerService kafkaProducerService;
 
+    @Autowired
+    private BatteryWebSocketService batteryWebSocketService;
+
     // Save Battery
     public Battery saveBattery(Battery battery) {
 
@@ -32,6 +35,8 @@ public class BatteryService {
 
         kafkaProducerService.sendMessage(
                 "Battery Added : " + savedBattery.getBatteryName());
+
+        batteryWebSocketService.sendBatteryUpdate(savedBattery);
 
         return savedBattery;
     }
@@ -43,26 +48,33 @@ public class BatteryService {
 
     // Get Battery By Id
     public Battery getBatteryById(Long id) {
+
         return batteryRepository.findById(id)
-                .orElseThrow(() -> new BatteryNotFoundException("Battery not found with id: " + id));
+                .orElseThrow(() ->
+                        new BatteryNotFoundException(
+                                "Battery not found with id: " + id));
     }
 
     // Update Battery
     public Battery updateBattery(Long id, Battery battery) {
 
         Battery existingBattery = batteryRepository.findById(id)
-                .orElseThrow(() -> new BatteryNotFoundException("Battery not found with id: " + id));
+                .orElseThrow(() ->
+                        new BatteryNotFoundException(
+                                "Battery not found with id: " + id));
 
         existingBattery.setBatteryName(battery.getBatteryName());
         existingBattery.setLocation(battery.getLocation());
         existingBattery.setZone(battery.getZone());
         existingBattery.setPower(battery.getPower());
         existingBattery.setState(battery.getState());
-       
+
         Battery updatedBattery = batteryRepository.save(existingBattery);
 
         kafkaProducerService.sendMessage(
                 "Battery Updated : " + updatedBattery.getBatteryName());
+
+        batteryWebSocketService.sendBatteryUpdate(updatedBattery);
 
         return updatedBattery;
     }
@@ -71,12 +83,17 @@ public class BatteryService {
     public void deleteBattery(Long id) {
 
         Battery battery = batteryRepository.findById(id)
-                .orElseThrow(() -> new BatteryNotFoundException("Battery not found with id: " + id));
+                .orElseThrow(() ->
+                        new BatteryNotFoundException(
+                                "Battery not found with id: " + id));
 
         batteryRepository.delete(battery);
 
         kafkaProducerService.sendMessage(
                 "Battery Deleted : " + battery.getBatteryName());
+
+        batteryWebSocketService.sendMessage(
+                "Battery Deleted Successfully");
     }
 
     // Get All Battery DTOs
@@ -100,7 +117,6 @@ public class BatteryService {
         dto.setPower(battery.getPower());
         dto.setState(battery.getState());
 
-
         return dto;
     }
 
@@ -112,7 +128,7 @@ public class BatteryService {
             Thread.sleep(1000);
 
             return "Battery processed successfully using Virtual Thread: "
-                    + Thread.currentThread().toString();
+                    + Thread.currentThread();
 
         });
 
@@ -125,12 +141,17 @@ public class BatteryService {
         int totalTasks = 1000;
 
         for (int i = 1; i <= totalTasks; i++) {
+
             virtualThreadExecutor.submit(() -> {
+
                 System.out.println("Running: " + Thread.currentThread());
+
                 return null;
             });
+
         }
 
         return totalTasks + " Virtual Threads executed successfully.";
     }
+
 }

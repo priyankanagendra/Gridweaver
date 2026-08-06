@@ -10,9 +10,12 @@ import com.gridweaver.entity.Battery;
 import com.gridweaver.service.BatteryService;
 
 import jakarta.validation.Valid;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 @RestController
 @RequestMapping("/battery")
+@CrossOrigin(origins = "http://localhost:5176")
+
+
 public class BatteryController {
 
     @Autowired
