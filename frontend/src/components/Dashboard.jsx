@@ -1,7 +1,23 @@
 import StatCard from './StatCard'
 import GridMap from './GridMap'
+import mockNodes from '../data/mockNodes'
 
 function Dashboard() {
+
+  const totalNodes = mockNodes.length
+
+  const activeNodes = mockNodes.filter(
+    (node) => node.status === 'ACTIVE'
+  ).length
+
+  const warningNodes = mockNodes.filter(
+    (node) => node.status === 'WARNING'
+  ).length
+
+  const offlineNodes = mockNodes.filter(
+    (node) => node.status === 'OFFLINE'
+  ).length
+
   return (
     <main className="dashboard">
 
@@ -11,22 +27,22 @@ function Dashboard() {
 
         <StatCard
           title="Total Nodes"
-          value="12"
+          value={totalNodes}
         />
 
         <StatCard
           title="Active Nodes"
-          value="9"
+          value={activeNodes}
         />
 
         <StatCard
           title="Warning Nodes"
-          value="2"
+          value={warningNodes}
         />
 
         <StatCard
           title="Offline Nodes"
-          value="1"
+          value={offlineNodes}
         />
 
       </div>
