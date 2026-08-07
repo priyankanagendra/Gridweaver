@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import BatteryService from "../services/BatteryService";
+import AuthService from "../services/AuthService";
 
 function BatteryList({ setSelectedBattery, refresh }) {
+
+    const role = AuthService.getRole();
 
     const [batteries, setBatteries] = useState([]);
     const [search, setSearch] = useState("");
@@ -45,13 +48,13 @@ function BatteryList({ setSelectedBattery, refresh }) {
     const filteredBatteries = batteries.filter((battery) => {
 
         const matchesSearch =
-            battery.batteryName.toLowerCase().includes(search.toLowerCase()) ||
-            battery.location.toLowerCase().includes(search.toLowerCase()) ||
-            battery.zone.toLowerCase().includes(search.toLowerCase());
+                battery.batteryName.toLowerCase().includes(search.toLowerCase()) ||
+                battery.location.toLowerCase().includes(search.toLowerCase()) ||
+                battery.zone.toLowerCase().includes(search.toLowerCase());
 
         const matchesState =
-            filterState === "ALL" ||
-            battery.state.toUpperCase() === filterState;
+                filterState === "ALL" ||
+                battery.state.toUpperCase() === filterState;
 
         return matchesSearch && matchesState;
 
@@ -137,19 +140,32 @@ function BatteryList({ setSelectedBattery, refresh }) {
 
                                             <td>
 
-                                                <button
-                                                    className="btn btn-primary btn-sm me-2"
-                                                    onClick={() => handleEdit(battery)}
-                                                >
-                                                    Edit
-                                                </button>
+                                                {/* ADMIN & OPERATOR */}
 
-                                                <button
-                                                    className="btn btn-danger btn-sm"
-                                                    onClick={() => handleDelete(battery.id)}
-                                                >
-                                                    Delete
-                                                </button>
+                                                {(role === "ROLE_ADMIN" ||
+                                                  role === "ROLE_OPERATOR") && (
+
+                                                    <button
+                                                        className="btn btn-primary btn-sm me-2"
+                                                        onClick={() => handleEdit(battery)}
+                                                    >
+                                                        Edit
+                                                    </button>
+
+                                                )}
+
+                                                {/* ADMIN Only */}
+
+                                                {role === "ROLE_ADMIN" && (
+
+                                                    <button
+                                                        className="btn btn-danger btn-sm"
+                                                        onClick={() => handleDelete(battery.id)}
+                                                    >
+                                                        Delete
+                                                    </button>
+
+                                                )}
 
                                             </td>
 
@@ -185,6 +201,7 @@ function BatteryList({ setSelectedBattery, refresh }) {
         </div>
 
     );
+
 }
 
 export default BatteryList;
