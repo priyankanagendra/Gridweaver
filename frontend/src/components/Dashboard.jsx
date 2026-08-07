@@ -154,12 +154,16 @@ function Dashboard({ onUnauthorized }) {
         }
 
 
-        setEvents((currentEvents) =>
-          [
-            newEvent,
-            ...currentEvents
-          ].slice(0, 10)
-        )
+		if (previousStatus !== update.status) {
+
+		  setEvents((currentEvents) =>
+		    [
+		      newEvent,
+		      ...currentEvents
+		    ].slice(0, 10)
+		  )
+
+		}
 
 
         return updatedNodes
