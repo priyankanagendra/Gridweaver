@@ -2,12 +2,13 @@ package com.gridweaver.service;
 
 import org.springframework.stereotype.Service;
 
+import com.gridweaver.dto.PowerTransferResponseDTO;
 import com.gridweaver.dto.ZonePowerDTO;
 
 @Service
 public class RegionalBalancingService {
 
-    public String balancePower(
+    public PowerTransferResponseDTO balancePower(
             ZonePowerDTO sourceZone,
             ZonePowerDTO targetZone) {
 
@@ -20,15 +21,27 @@ public class RegionalBalancingService {
 
         if (sourceNetPower <= 0) {
 
-            return sourceZone.getZoneName()
-                    + " does not have surplus power";
+            return new PowerTransferResponseDTO(
+                    sourceZone.getZoneName(),
+                    targetZone.getZoneName(),
+                    Math.max(sourceNetPower, 0),
+                    Math.max(-targetNetPower, 0),
+                    0.0,
+                    "NO_SURPLUS"
+            );
         }
 
 
         if (targetNetPower >= 0) {
 
-            return targetZone.getZoneName()
-                    + " does not require additional power";
+            return new PowerTransferResponseDTO(
+                    sourceZone.getZoneName(),
+                    targetZone.getZoneName(),
+                    sourceNetPower,
+                    0.0,
+                    0.0,
+                    "NO_DEFICIT"
+            );
         }
 
 
@@ -43,11 +56,13 @@ public class RegionalBalancingService {
                 );
 
 
-        return String.format(
-                "Transferred %.2f units of power from %s to %s",
-                transferAmount,
+        return new PowerTransferResponseDTO(
                 sourceZone.getZoneName(),
-                targetZone.getZoneName()
+                targetZone.getZoneName(),
+                sourceNetPower,
+                targetDeficit,
+                transferAmount,
+                "SUCCESS"
         );
     }
 }

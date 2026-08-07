@@ -16,9 +16,11 @@ export async function loginUser(email, password) {
     }),
   })
 
+
   if (!response.ok) {
     throw new Error('Login failed')
   }
+
 
   const data = await response.json()
 
@@ -30,6 +32,7 @@ export async function getBatteries() {
 
   const token = localStorage.getItem('token')
 
+
   const response = await fetch(`${BASE_URL}/battery`, {
     method: 'GET',
 
@@ -38,6 +41,7 @@ export async function getBatteries() {
     },
   })
 
+
   if (response.status === 401) {
 
     localStorage.removeItem('token')
@@ -45,9 +49,11 @@ export async function getBatteries() {
     throw new Error('UNAUTHORIZED')
   }
 
+
   if (!response.ok) {
     throw new Error('Failed to fetch batteries')
   }
+
 
   const data = await response.json()
 
@@ -58,6 +64,7 @@ export async function getBatteries() {
 export async function processTelemetry(batteryId) {
 
   const token = localStorage.getItem('token')
+
 
   const response = await fetch(
     `${BASE_URL}/telemetry/${batteryId}`,
@@ -70,6 +77,7 @@ export async function processTelemetry(batteryId) {
     }
   )
 
+
   if (response.status === 401) {
 
     localStorage.removeItem('token')
@@ -77,11 +85,52 @@ export async function processTelemetry(batteryId) {
     throw new Error('UNAUTHORIZED')
   }
 
+
   if (!response.ok) {
     throw new Error('Failed to process telemetry')
   }
 
+
   const data = await response.text()
+
+  return data
+}
+
+
+export async function balancePower(zones) {
+
+  const token = localStorage.getItem('token')
+
+
+  const response = await fetch(
+    `${BASE_URL}/balancing`,
+    {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+
+      body: JSON.stringify(zones),
+    }
+  )
+
+
+  if (response.status === 401) {
+
+    localStorage.removeItem('token')
+
+    throw new Error('UNAUTHORIZED')
+  }
+
+
+  if (!response.ok) {
+    throw new Error('Unable to balance power')
+  }
+
+
+  const data = await response.json()
 
   return data
 }

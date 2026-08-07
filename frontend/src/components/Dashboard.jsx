@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import StatCard from './StatCard'
 import GridMap from './GridMap'
 import EventLog from './EventLog'
-
+import RegionalBalancing from './RegionalBalancing'
 import mockNodes from '../data/mockNodes'
 
 import {
@@ -370,10 +370,13 @@ function Dashboard({ onUnauthorized }) {
       </section>
 
 
-      <GridMap nodes={nodes} />
+	  <GridMap nodes={nodes} />
 
+	  <RegionalBalancing
+	    onUnauthorized={onUnauthorized}
+	  />
 
-      <EventLog events={events} />
+	  <EventLog events={events} />
 
     </main>
   )

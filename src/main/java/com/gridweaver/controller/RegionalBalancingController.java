@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gridweaver.dto.PowerTransferResponseDTO;
 import com.gridweaver.dto.ZonePowerDTO;
 import com.gridweaver.service.RegionalBalancingService;
 
@@ -17,15 +18,24 @@ public class RegionalBalancingController {
     public RegionalBalancingController(
             RegionalBalancingService regionalBalancingService) {
 
-        this.regionalBalancingService = regionalBalancingService;
+        this.regionalBalancingService =
+                regionalBalancingService;
     }
 
     @PostMapping
-    public String balancePower(
+    public PowerTransferResponseDTO balancePower(
             @RequestBody ZonePowerDTO[] zones) {
 
         if (zones == null || zones.length != 2) {
-            return "Exactly two zones are required for balancing";
+
+            return new PowerTransferResponseDTO(
+                    null,
+                    null,
+                    0.0,
+                    0.0,
+                    0.0,
+                    "INVALID_REQUEST"
+            );
         }
 
         ZonePowerDTO sourceZone = zones[0];
