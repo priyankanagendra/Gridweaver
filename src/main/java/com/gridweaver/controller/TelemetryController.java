@@ -39,7 +39,9 @@ public class TelemetryController {
                 new GridNodeUpdateDTO(
                         nodeId,
                         "WARNING",
-                        75.0
+                        75.0,
+                        82.0,
+                        35.0
                 );
 
         gridUpdateService.sendGridUpdate(update);
