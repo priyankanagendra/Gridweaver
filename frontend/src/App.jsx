@@ -15,13 +15,26 @@ function App() {
     setIsLoggedIn(true)
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    setIsLoggedIn(false)
+  }
+
+  const handleUnauthorized = () => {
+    localStorage.removeItem('token')
+    setIsLoggedIn(false)
+  }
+
   return (
     <div className="app">
 
       {isLoggedIn ? (
         <>
-          <Header />
-          <Dashboard />
+          <Header onLogout={handleLogout} />
+
+          <Dashboard
+            onUnauthorized={handleUnauthorized}
+          />
         </>
       ) : (
         <Login onLoginSuccess={handleLoginSuccess} />
