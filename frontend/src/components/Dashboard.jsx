@@ -4,13 +4,18 @@ import StatCard from './StatCard'
 import GridMap from './GridMap'
 
 import mockNodes from '../data/mockNodes'
-import { getBatteries } from '../services/api'
+import {
+  getBatteries,
+  processTelemetry
+} from '../services/api'
 
 function Dashboard({ onUnauthorized }) {
 
   const [batteries, setBatteries] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
+  const [processingId, setProcessingId] = useState(null)
 
   const totalNodes = mockNodes.length
 
@@ -27,43 +32,78 @@ function Dashboard({ onUnauthorized }) {
   ).length
 
 
-  useEffect(() => {
+  const fetchBatteries = async () => {
 
-    const fetchBatteries = async () => {
+    try {
 
-      try {
+      setLoading(true)
+      setError('')
 
-        setLoading(true)
-        setError('')
+      const data = await getBatteries()
 
-        const data = await getBatteries()
+      console.log('Battery data from backend:', data)
 
-        console.log('Battery data from backend:', data)
+      setBatteries(data)
 
-        setBatteries(data)
+    } catch (error) {
 
-      } catch (error) {
+      console.error('Error fetching batteries:', error)
 
-        console.error('Error fetching batteries:', error)
-
-        if (error.message === 'UNAUTHORIZED') {
-
-          onUnauthorized()
-          return
-        }
-
-        setError('Unable to load battery data')
-
-      } finally {
-
-        setLoading(false)
-
+      if (error.message === 'UNAUTHORIZED') {
+        onUnauthorized()
+        return
       }
+
+      setError('Unable to load battery data')
+
+    } finally {
+
+      setLoading(false)
+
     }
+  }
+
+
+  useEffect(() => {
 
     fetchBatteries()
 
-  }, [onUnauthorized])
+  }, [])
+
+
+  const handleTelemetry = async (batteryId) => {
+
+    try {
+
+      setProcessingId(batteryId)
+      setError('')
+      setSuccessMessage('')
+
+      await processTelemetry(batteryId)
+
+      await fetchBatteries()
+
+      setSuccessMessage(
+        `Telemetry processed successfully for Battery ${batteryId}`
+      )
+
+    } catch (error) {
+
+      console.error('Error processing telemetry:', error)
+
+      if (error.message === 'UNAUTHORIZED') {
+        onUnauthorized()
+        return
+      }
+
+      setError('Unable to process battery telemetry')
+
+    } finally {
+
+      setProcessingId(null)
+
+    }
+  }
 
 
   return (
@@ -100,6 +140,12 @@ function Dashboard({ onUnauthorized }) {
 
         <h2>Battery Overview</h2>
 
+        {successMessage && (
+          <p className="battery-success">
+            {successMessage}
+          </p>
+        )}
+
         {loading && (
           <p className="battery-message">
             Loading battery data...
@@ -126,6 +172,7 @@ function Dashboard({ onUnauthorized }) {
                   <th>Capacity</th>
                   <th>Voltage</th>
                   <th>State</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
@@ -145,17 +192,33 @@ function Dashboard({ onUnauthorized }) {
 
                     <td>{battery.voltage} V</td>
 
-					<td>
-					  <span
-					    className={`battery-state ${
-					      battery.state
-					        ? battery.state.toLowerCase()
-					        : 'not-assigned'
-					    }`}
-					  >
-					    {battery.state ?? 'Not Assigned'}
-					  </span>
-					</td>
+                    <td>
+                      <span
+                        className={`battery-state ${
+                          battery.state
+                            ? battery.state.toLowerCase()
+                            : 'not-assigned'
+                        }`}
+                      >
+                        {battery.state ?? 'Not Assigned'}
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        className="telemetry-button"
+                        onClick={() =>
+                          handleTelemetry(battery.id)
+                        }
+                        disabled={
+                          processingId === battery.id
+                        }
+                      >
+                        {processingId === battery.id
+                          ? 'Processing...'
+                          : 'Process Telemetry'}
+                      </button>
+                    </td>
 
                   </tr>
 

@@ -53,3 +53,35 @@ export async function getBatteries() {
 
   return data
 }
+
+
+export async function processTelemetry(batteryId) {
+
+  const token = localStorage.getItem('token')
+
+  const response = await fetch(
+    `${BASE_URL}/telemetry/${batteryId}`,
+    {
+      method: 'POST',
+
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }
+  )
+
+  if (response.status === 401) {
+
+    localStorage.removeItem('token')
+
+    throw new Error('UNAUTHORIZED')
+  }
+
+  if (!response.ok) {
+    throw new Error('Failed to process telemetry')
+  }
+
+  const data = await response.text()
+
+  return data
+}
