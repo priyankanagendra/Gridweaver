@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import {
   MapContainer,
@@ -12,54 +12,14 @@ import 'leaflet/dist/leaflet.css'
 import MapLegend from './MapLegend'
 import HeatmapLayer from './HeatmapLayer'
 
-import mockNodes from '../data/mockNodes'
 
-import {
-  connectGridWebSocket,
-  disconnectGridWebSocket
-} from '../services/websocket'
+function GridMap({ nodes }) {
 
+  const [heatmapMode, setHeatmapMode] =
+    useState('consumption')
 
-function GridMap() {
-
-  const [nodes, setNodes] = useState(mockNodes)
-
-  const [heatmapMode, setHeatmapMode] = useState('consumption')
-
-  const [showHeatmap, setShowHeatmap] = useState(false)
-
-
-  useEffect(() => {
-
-    connectGridWebSocket((update) => {
-
-      console.log('Updating map node:', update)
-
-      setNodes((currentNodes) =>
-        currentNodes.map((node) =>
-
-          node.id === update.nodeId
-            ? {
-                ...node,
-                status: update.status,
-                powerOutput: update.powerOutput,
-                powerConsumption: update.powerConsumption,
-                powerGeneration: update.powerGeneration
-              }
-            : node
-
-        )
-      )
-    })
-
-
-    return () => {
-
-      disconnectGridWebSocket()
-
-    }
-
-  }, [])
+  const [showHeatmap, setShowHeatmap] =
+    useState(false)
 
 
   const getStatusColor = (status) => {
@@ -92,7 +52,9 @@ function GridMap() {
           <button
             className="heatmap-button"
             onClick={() =>
-              setShowHeatmap((current) => !current)
+              setShowHeatmap(
+                (current) => !current
+              )
             }
           >
             {showHeatmap
@@ -102,13 +64,17 @@ function GridMap() {
 
 
           {showHeatmap && (
+
             <select
               className="heatmap-select"
               value={heatmapMode}
               onChange={(event) =>
-                setHeatmapMode(event.target.value)
+                setHeatmapMode(
+                  event.target.value
+                )
               }
             >
+
               <option value="consumption">
                 Power Consumption
               </option>
@@ -116,7 +82,9 @@ function GridMap() {
               <option value="generation">
                 Power Generation
               </option>
+
             </select>
+
           )}
 
         </div>
@@ -140,10 +108,12 @@ function GridMap() {
 
 
         {showHeatmap && (
+
           <HeatmapLayer
             nodes={nodes}
             mode={heatmapMode}
           />
+
         )}
 
 
@@ -157,15 +127,21 @@ function GridMap() {
             ]}
             radius={10}
             pathOptions={{
-              color: getStatusColor(node.status),
-              fillColor: getStatusColor(node.status),
-              fillOpacity: 0.8,
+              color:
+                getStatusColor(node.status),
+
+              fillColor:
+                getStatusColor(node.status),
+
+              fillOpacity: 0.8
             }}
           >
 
             <Popup>
 
-              <strong>{node.name}</strong>
+              <strong>
+                {node.name}
+              </strong>
 
               <br />
 
@@ -183,7 +159,8 @@ function GridMap() {
               {node.powerConsumption !== undefined && (
                 <>
                   <br />
-                  Power Consumption: {node.powerConsumption}
+                  Power Consumption:{' '}
+                  {node.powerConsumption}
                 </>
               )}
 
@@ -191,7 +168,8 @@ function GridMap() {
               {node.powerGeneration !== undefined && (
                 <>
                   <br />
-                  Power Generation: {node.powerGeneration}
+                  Power Generation:{' '}
+                  {node.powerGeneration}
                 </>
               )}
 

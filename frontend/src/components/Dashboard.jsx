@@ -2,12 +2,20 @@ import { useEffect, useState } from 'react'
 
 import StatCard from './StatCard'
 import GridMap from './GridMap'
+import EventLog from './EventLog'
 
 import mockNodes from '../data/mockNodes'
+
 import {
   getBatteries,
   processTelemetry
 } from '../services/api'
+
+import {
+  connectGridWebSocket,
+  disconnectGridWebSocket
+} from '../services/websocket'
+
 
 function Dashboard({ onUnauthorized }) {
 
@@ -17,17 +25,22 @@ function Dashboard({ onUnauthorized }) {
   const [successMessage, setSuccessMessage] = useState('')
   const [processingId, setProcessingId] = useState(null)
 
-  const totalNodes = mockNodes.length
+  const [nodes, setNodes] = useState(mockNodes)
 
-  const activeNodes = mockNodes.filter(
+  const [events, setEvents] = useState([])
+
+
+  const totalNodes = nodes.length
+
+  const activeNodes = nodes.filter(
     (node) => node.status === 'ACTIVE'
   ).length
 
-  const warningNodes = mockNodes.filter(
+  const warningNodes = nodes.filter(
     (node) => node.status === 'WARNING'
   ).length
 
-  const offlineNodes = mockNodes.filter(
+  const offlineNodes = nodes.filter(
     (node) => node.status === 'OFFLINE'
   ).length
 
@@ -41,13 +54,19 @@ function Dashboard({ onUnauthorized }) {
 
       const data = await getBatteries()
 
-      console.log('Battery data from backend:', data)
+      console.log(
+        'Battery data from backend:',
+        data
+      )
 
       setBatteries(data)
 
     } catch (error) {
 
-      console.error('Error fetching batteries:', error)
+      console.error(
+        'Error fetching batteries:',
+        error
+      )
 
       if (error.message === 'UNAUTHORIZED') {
         onUnauthorized()
@@ -59,7 +78,6 @@ function Dashboard({ onUnauthorized }) {
     } finally {
 
       setLoading(false)
-
     }
   }
 
@@ -67,6 +85,93 @@ function Dashboard({ onUnauthorized }) {
   useEffect(() => {
 
     fetchBatteries()
+
+  }, [])
+
+
+  useEffect(() => {
+
+    connectGridWebSocket((update) => {
+
+      console.log(
+        'Grid update received in Dashboard:',
+        update
+      )
+
+
+      setNodes((currentNodes) => {
+
+        const currentNode =
+          currentNodes.find(
+            (node) => node.id === update.nodeId
+          )
+
+        const previousStatus =
+          currentNode
+            ? currentNode.status
+            : 'UNKNOWN'
+
+
+        const updatedNodes =
+          currentNodes.map((node) =>
+
+            node.id === update.nodeId
+              ? {
+                  ...node,
+                  status: update.status,
+                  powerOutput: update.powerOutput,
+                  powerConsumption:
+                    update.powerConsumption,
+                  powerGeneration:
+                    update.powerGeneration
+                }
+              : node
+
+          )
+
+
+        const newEvent = {
+
+          id:
+            Date.now() +
+            Math.random(),
+
+          nodeId: update.nodeId,
+
+          previousStatus:
+            previousStatus,
+
+          status: update.status,
+
+          powerConsumption:
+            update.powerConsumption,
+
+          powerGeneration:
+            update.powerGeneration,
+
+          time:
+            new Date().toLocaleTimeString()
+        }
+
+
+        setEvents((currentEvents) =>
+          [
+            newEvent,
+            ...currentEvents
+          ].slice(0, 10)
+        )
+
+
+        return updatedNodes
+      })
+    })
+
+
+    return () => {
+
+      disconnectGridWebSocket()
+
+    }
 
   }, [])
 
@@ -89,19 +194,23 @@ function Dashboard({ onUnauthorized }) {
 
     } catch (error) {
 
-      console.error('Error processing telemetry:', error)
+      console.error(
+        'Error processing telemetry:',
+        error
+      )
 
       if (error.message === 'UNAUTHORIZED') {
         onUnauthorized()
         return
       }
 
-      setError('Unable to process battery telemetry')
+      setError(
+        'Unable to process battery telemetry'
+      )
 
     } finally {
 
       setProcessingId(null)
-
     }
   }
 
@@ -165,6 +274,7 @@ function Dashboard({ onUnauthorized }) {
             <table className="battery-table">
 
               <thead>
+
                 <tr>
                   <th>ID</th>
                   <th>Battery Name</th>
@@ -174,7 +284,9 @@ function Dashboard({ onUnauthorized }) {
                   <th>State</th>
                   <th>Action</th>
                 </tr>
+
               </thead>
+
 
               <tbody>
 
@@ -184,15 +296,24 @@ function Dashboard({ onUnauthorized }) {
 
                     <td>{battery.id}</td>
 
-                    <td>{battery.batteryName}</td>
-
-                    <td>{battery.batteryType}</td>
-
-                    <td>{battery.capacity}</td>
-
-                    <td>{battery.voltage} V</td>
+                    <td>
+                      {battery.batteryName}
+                    </td>
 
                     <td>
+                      {battery.batteryType}
+                    </td>
+
+                    <td>
+                      {battery.capacity}
+                    </td>
+
+                    <td>
+                      {battery.voltage} V
+                    </td>
+
+                    <td>
+
                       <span
                         className={`battery-state ${
                           battery.state
@@ -200,24 +321,34 @@ function Dashboard({ onUnauthorized }) {
                             : 'not-assigned'
                         }`}
                       >
-                        {battery.state ?? 'Not Assigned'}
+                        {battery.state ??
+                          'Not Assigned'}
                       </span>
+
                     </td>
 
                     <td>
+
                       <button
                         className="telemetry-button"
                         onClick={() =>
-                          handleTelemetry(battery.id)
+                          handleTelemetry(
+                            battery.id
+                          )
                         }
                         disabled={
-                          processingId === battery.id
+                          processingId ===
+                          battery.id
                         }
                       >
-                        {processingId === battery.id
+
+                        {processingId ===
+                        battery.id
                           ? 'Processing...'
                           : 'Process Telemetry'}
+
                       </button>
+
                     </td>
 
                   </tr>
@@ -235,7 +366,10 @@ function Dashboard({ onUnauthorized }) {
       </section>
 
 
-      <GridMap />
+      <GridMap nodes={nodes} />
+
+
+      <EventLog events={events} />
 
     </main>
   )
