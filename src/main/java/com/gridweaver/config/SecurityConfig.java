@@ -36,7 +36,9 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource())
+                )
 
                 .csrf(csrf -> csrf.disable())
 
@@ -44,11 +46,15 @@ public class SecurityConfig {
 
                         .requestMatchers("/auth/**").permitAll()
 
+                        // Allow WebSocket handshake
+                        .requestMatchers("/ws", "/ws/**").permitAll()
+
                         .requestMatchers("/battery/**").authenticated()
 
                         .requestMatchers("/telemetry/**").authenticated()
 
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
 
                 .httpBasic(Customizer.withDefaults())
 
@@ -63,7 +69,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration configuration =
+                new CorsConfiguration();
 
         configuration.setAllowedOrigins(
                 List.of("http://localhost:5173")
