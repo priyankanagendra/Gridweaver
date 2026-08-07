@@ -13,10 +13,16 @@ public class BatteryWebSocketService {
     }
 
     public void sendBatteryUpdate(Object battery) {
+
+        System.out.println("🔥 Sending WebSocket Message: " + battery);
+
         messagingTemplate.convertAndSend("/topic/batteries", battery);
     }
 
     public void sendMessage(String message) {
+
+        System.out.println("🔥 Sending Message: " + message);
+
         messagingTemplate.convertAndSend("/topic/messages", message);
     }
 }
