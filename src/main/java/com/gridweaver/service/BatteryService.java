@@ -31,12 +31,21 @@ public class BatteryService {
     // Save Battery
     public Battery saveBattery(Battery battery) {
 
+        System.out.println("========== SAVE BATTERY METHOD CALLED ==========");
+
         Battery savedBattery = batteryRepository.save(battery);
+
+        System.out.println("Battery Saved Successfully");
+        System.out.println("Battery Name : " + savedBattery.getBatteryName());
 
         kafkaProducerService.sendMessage(
                 "Battery Added : " + savedBattery.getBatteryName());
 
+        System.out.println("Kafka Producer Executed");
+
         batteryWebSocketService.sendBatteryUpdate(savedBattery);
+
+        System.out.println("WebSocket Message Sent");
 
         return savedBattery;
     }
@@ -71,10 +80,16 @@ public class BatteryService {
 
         Battery updatedBattery = batteryRepository.save(existingBattery);
 
+        System.out.println("========== UPDATE BATTERY ==========");
+
         kafkaProducerService.sendMessage(
                 "Battery Updated : " + updatedBattery.getBatteryName());
 
+        System.out.println("Kafka Producer Executed");
+
         batteryWebSocketService.sendBatteryUpdate(updatedBattery);
+
+        System.out.println("WebSocket Message Sent");
 
         return updatedBattery;
     }
@@ -89,11 +104,17 @@ public class BatteryService {
 
         batteryRepository.delete(battery);
 
+        System.out.println("========== DELETE BATTERY ==========");
+
         kafkaProducerService.sendMessage(
                 "Battery Deleted : " + battery.getBatteryName());
 
-        batteryWebSocketService.sendMessage(
-                "Battery Deleted Successfully");
+        System.out.println("Kafka Producer Executed");
+
+        batteryWebSocketService.sendBatteryUpdate(
+                "Battery Deleted : " + battery.getBatteryName());
+
+        System.out.println("WebSocket Message Sent");
     }
 
     // Get All Battery DTOs
@@ -153,5 +174,4 @@ public class BatteryService {
 
         return totalTasks + " Virtual Threads executed successfully.";
     }
-
 }
