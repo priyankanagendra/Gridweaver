@@ -75,6 +75,12 @@
     <version>4.0.1</version>
 </dependency>
 
+<!-- Apache Kafka -->
+<dependency>
+    <groupId>org.springframework.kafka</groupId>
+    <artifactId>spring-kafka</artifactId>
+</dependency>
+
         <!-- Bean Validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
