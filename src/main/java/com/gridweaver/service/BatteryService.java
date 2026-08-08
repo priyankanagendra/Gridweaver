@@ -38,11 +38,13 @@ public class BatteryService {
         System.out.println("Battery Saved Successfully");
         System.out.println("Battery Name : " + savedBattery.getBatteryName());
 
+        // Send event to Kafka
         kafkaProducerService.sendMessage(
                 "Battery Added : " + savedBattery.getBatteryName());
 
         System.out.println("Kafka Producer Executed");
 
+        // Send battery OBJECT to WebSocket
         batteryWebSocketService.sendBatteryUpdate(savedBattery);
 
         System.out.println("WebSocket Message Sent");
@@ -82,11 +84,13 @@ public class BatteryService {
 
         System.out.println("========== UPDATE BATTERY ==========");
 
+        // Send event to Kafka
         kafkaProducerService.sendMessage(
                 "Battery Updated : " + updatedBattery.getBatteryName());
 
         System.out.println("Kafka Producer Executed");
 
+        // Send battery OBJECT to WebSocket
         batteryWebSocketService.sendBatteryUpdate(updatedBattery);
 
         System.out.println("WebSocket Message Sent");
@@ -102,17 +106,23 @@ public class BatteryService {
                         new BatteryNotFoundException(
                                 "Battery not found with id: " + id));
 
-        batteryRepository.delete(battery);
-
-        System.out.println("========== DELETE BATTERY ==========");
-
+        // Send delete event BEFORE deleting
         kafkaProducerService.sendMessage(
                 "Battery Deleted : " + battery.getBatteryName());
 
         System.out.println("Kafka Producer Executed");
 
-        batteryWebSocketService.sendBatteryUpdate(
-                "Battery Deleted : " + battery.getBatteryName());
+        // Delete from database
+        batteryRepository.delete(battery);
+
+        System.out.println("========== DELETE BATTERY ==========");
+
+        /*
+         * Send the battery object to WebSocket.
+         * Do NOT send "Battery Deleted : ..." here,
+         * because /topic/batteries expects JSON.
+         */
+        batteryWebSocketService.sendBatteryUpdate(battery);
 
         System.out.println("WebSocket Message Sent");
     }
@@ -150,7 +160,6 @@ public class BatteryService {
 
             return "Battery processed successfully using Virtual Thread: "
                     + Thread.currentThread();
-
         });
 
         return result.get();
@@ -165,13 +174,14 @@ public class BatteryService {
 
             virtualThreadExecutor.submit(() -> {
 
-                System.out.println("Running: " + Thread.currentThread());
+                System.out.println(
+                        "Running: " + Thread.currentThread());
 
                 return null;
             });
-
         }
 
-        return totalTasks + " Virtual Threads executed successfully.";
+        return totalTasks +
+                " Virtual Threads executed successfully.";
     }
 }
