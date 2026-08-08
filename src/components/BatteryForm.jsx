@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import BatteryService from "../services/BatteryService";
+import AuthService from "../services/AuthService";
 
 function BatteryForm({ selectedBattery, refreshData }) {
+
+    const role = AuthService.getRole();
 
     const [battery, setBattery] = useState({
         id: "",
@@ -37,6 +40,7 @@ function BatteryForm({ selectedBattery, refreshData }) {
     };
 
     const handleSubmit = (e) => {
+
         e.preventDefault();
 
         if (battery.id) {
@@ -66,17 +70,26 @@ function BatteryForm({ selectedBattery, refreshData }) {
                 });
 
         }
+
     };
 
+    // VIEWER cannot see the form
+    if (role === "ROLE_VIEWER") {
+        return null;
+    }
+
     return (
+
         <div className="container mt-4">
 
             <div className="card shadow">
 
                 <div className="card-header bg-primary text-white">
+
                     <h3 className="text-center">
                         {battery.id ? "Update Battery" : "Add Battery"}
                     </h3>
+
                 </div>
 
                 <div className="card-body">
@@ -165,6 +178,7 @@ function BatteryForm({ selectedBattery, refreshData }) {
             </div>
 
         </div>
+
     );
 }
 

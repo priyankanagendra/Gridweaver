@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import BatteryService from "../services/BatteryService";
+import AuthService from "../services/AuthService";
 
 function BatteryList({ setSelectedBattery, refresh }) {
+
+    const role = AuthService.getRole();
 
     const [batteries, setBatteries] = useState([]);
     const [search, setSearch] = useState("");
@@ -137,19 +140,29 @@ function BatteryList({ setSelectedBattery, refresh }) {
 
                                             <td>
 
-                                                <button
-                                                    className="btn btn-primary btn-sm me-2"
-                                                    onClick={() => handleEdit(battery)}
-                                                >
-                                                    Edit
-                                                </button>
+                                                {(role === "ROLE_ADMIN" || role === "ROLE_OPERATOR") && (
+                                                    <>
+                                                        <button
+                                                            className="btn btn-primary btn-sm me-2"
+                                                            onClick={() => handleEdit(battery)}
+                                                        >
+                                                            Edit
+                                                        </button>
 
-                                                <button
-                                                    className="btn btn-danger btn-sm"
-                                                    onClick={() => handleDelete(battery.id)}
-                                                >
-                                                    Delete
-                                                </button>
+                                                        <button
+                                                            className="btn btn-danger btn-sm"
+                                                            onClick={() => handleDelete(battery.id)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </>
+                                                )}
+
+                                                {role === "ROLE_VIEWER" && (
+                                                    <span className="text-muted">
+                                                        View Only
+                                                    </span>
+                                                )}
 
                                             </td>
 
