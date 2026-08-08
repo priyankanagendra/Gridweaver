@@ -7,29 +7,30 @@ function EventLog() {
 
     useEffect(() => {
 
-        WebSocketService.connect((message) => {
+        console.log("📢 Registering Event Log...");
 
-            const event = {
+        WebSocketService.connectToEvents((message) => {
+
+            console.log("📢 Event Log Received:", message);
+
+            const newEvent = {
+                id: Date.now() + Math.random(),
                 time: new Date().toLocaleTimeString(),
-                message:
-                    typeof message === "string"
-                        ? message
-                        : JSON.stringify(message)
+                message: message
             };
 
-            setEvents((prev) => [event, ...prev]);
+            setEvents((previousEvents) => [
+                newEvent,
+                ...previousEvents
+            ]);
 
         });
-
-        return () => {
-            WebSocketService.disconnect();
-        };
 
     }, []);
 
     return (
 
-        <div className="container mt-4">
+        <div className="container mt-4 mb-4">
 
             <div className="card shadow">
 
@@ -41,50 +42,52 @@ function EventLog() {
 
                 </div>
 
-                <div
-                    className="card-body"
-                    style={{
-                        maxHeight: "350px",
-                        overflowY: "auto"
-                    }}
-                >
+                <div className="card-body">
 
                     {events.length === 0 ? (
 
-                        <p className="text-muted">
+                        <p className="text-muted mb-0">
                             No Events Yet...
                         </p>
 
                     ) : (
 
-                        <table className="table table-striped">
+                        <div className="table-responsive">
 
-                            <thead>
+                            <table className="table table-striped table-hover table-bordered">
 
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Event</th>
-                                </tr>
+                                <thead className="table-dark">
 
-                            </thead>
-
-                            <tbody>
-
-                                {events.map((event, index) => (
-
-                                    <tr key={index}>
-
-                                        <td>{event.time}</td>
-
-                                        <td>{event.message}</td>
-
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Event</th>
                                     </tr>
 
-                                ))}
+                                </thead>
 
-                            </tbody>
+                                <tbody>
 
-                        </table>
+                                    {events.map((event) => (
+
+                                        <tr key={event.id}>
+
+                                            <td>
+                                                {event.time}
+                                            </td>
+
+                                            <td>
+                                                {event.message}
+                                            </td>
+
+                                        </tr>
+
+                                    ))}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
 
                     )}
 

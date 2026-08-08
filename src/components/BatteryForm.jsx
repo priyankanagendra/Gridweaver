@@ -49,7 +49,10 @@ function BatteryForm({ selectedBattery, refreshData }) {
                 .then(() => {
                     alert("Battery Updated Successfully!");
                     clearForm();
-                    refreshData();
+
+                    if (refreshData) {
+                        refreshData();
+                    }
                 })
                 .catch((error) => {
                     console.error(error);
@@ -62,7 +65,10 @@ function BatteryForm({ selectedBattery, refreshData }) {
                 .then(() => {
                     alert("Battery Added Successfully!");
                     clearForm();
-                    refreshData();
+
+                    if (refreshData) {
+                        refreshData();
+                    }
                 })
                 .catch((error) => {
                     console.error(error);
@@ -70,7 +76,6 @@ function BatteryForm({ selectedBattery, refreshData }) {
                 });
 
         }
-
     };
 
     // VIEWER cannot see the form
@@ -79,7 +84,6 @@ function BatteryForm({ selectedBattery, refreshData }) {
     }
 
     return (
-
         <div className="container mt-4">
 
             <div className="card shadow">
@@ -97,7 +101,10 @@ function BatteryForm({ selectedBattery, refreshData }) {
                     <form onSubmit={handleSubmit}>
 
                         <div className="mb-3">
-                            <label className="form-label">Battery Name</label>
+                            <label className="form-label">
+                                Battery Name
+                            </label>
+
                             <input
                                 type="text"
                                 className="form-control"
@@ -109,7 +116,10 @@ function BatteryForm({ selectedBattery, refreshData }) {
                         </div>
 
                         <div className="mb-3">
-                            <label className="form-label">Location</label>
+                            <label className="form-label">
+                                Location
+                            </label>
+
                             <input
                                 type="text"
                                 className="form-control"
@@ -121,7 +131,10 @@ function BatteryForm({ selectedBattery, refreshData }) {
                         </div>
 
                         <div className="mb-3">
-                            <label className="form-label">Zone</label>
+                            <label className="form-label">
+                                Zone
+                            </label>
+
                             <input
                                 type="text"
                                 className="form-control"
@@ -133,7 +146,10 @@ function BatteryForm({ selectedBattery, refreshData }) {
                         </div>
 
                         <div className="mb-3">
-                            <label className="form-label">Power (kW)</label>
+                            <label className="form-label">
+                                Power (kW)
+                            </label>
+
                             <input
                                 type="number"
                                 className="form-control"
@@ -145,7 +161,10 @@ function BatteryForm({ selectedBattery, refreshData }) {
                         </div>
 
                         <div className="mb-3">
-                            <label className="form-label">State</label>
+                            <label className="form-label">
+                                State
+                            </label>
+
                             <select
                                 className="form-select"
                                 name="state"
@@ -153,10 +172,22 @@ function BatteryForm({ selectedBattery, refreshData }) {
                                 onChange={handleChange}
                                 required
                             >
-                                <option value="">Select State</option>
-                                <option value="ACTIVE">ACTIVE</option>
-                                <option value="CHARGING">CHARGING</option>
-                                <option value="INACTIVE">INACTIVE</option>
+                                <option value="">
+                                    Select State
+                                </option>
+
+                                <option value="ACTIVE">
+                                    ACTIVE
+                                </option>
+
+                                <option value="CHARGING">
+                                    CHARGING
+                                </option>
+
+                                <option value="INACTIVE">
+                                    INACTIVE
+                                </option>
+
                             </select>
                         </div>
 
@@ -168,7 +199,9 @@ function BatteryForm({ selectedBattery, refreshData }) {
                                     : "btn btn-success w-100"
                             }
                         >
-                            {battery.id ? "Update Battery" : "Save Battery"}
+                            {battery.id
+                                ? "Update Battery"
+                                : "Save Battery"}
                         </button>
 
                     </form>
@@ -178,7 +211,6 @@ function BatteryForm({ selectedBattery, refreshData }) {
             </div>
 
         </div>
-
     );
 }
 
