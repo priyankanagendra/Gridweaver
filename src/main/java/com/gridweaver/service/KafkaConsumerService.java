@@ -11,12 +11,27 @@ public class KafkaConsumerService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    @KafkaListener(topics = "battery-topic", groupId = "gridweaver-group")
+    @KafkaListener(
+            topics = "battery-topic",
+            groupId = "gridweaver-group"
+    )
     public void consume(String message) {
 
-        System.out.println("Message Received : " + message);
+        System.out.println(
+                "📥 Kafka Message Received : " + message
+        );
 
-        // Send the message to all WebSocket clients
-        messagingTemplate.convertAndSend("/topic/batteries", message);
+        // ==========================================
+        // EVENT LOG ONLY
+        // ==========================================
+
+        messagingTemplate.convertAndSend(
+                "/topic/messages",
+                message
+        );
+
+        System.out.println(
+                "📝 Event sent to /topic/messages"
+        );
     }
 }

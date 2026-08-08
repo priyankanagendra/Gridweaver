@@ -41,33 +41,59 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
 
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        ))
 
                 .authenticationProvider(authenticationProvider())
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public APIs
+                        // Public login/auth APIs
                         .requestMatchers("/auth/**").permitAll()
 
+                        // Allow WebSocket handshake
+                        .requestMatchers("/battery-websocket/**").permitAll()
+
                         // Everyone can view batteries
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/battery/**")
-                        .hasAnyRole("ADMIN", "OPERATOR", "VIEWER")
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/battery/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "OPERATOR",
+                                "VIEWER"
+                        )
 
                         // Admin & Operator can add batteries
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/battery/**")
-                        .hasAnyRole("ADMIN", "OPERATOR")
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.POST,
+                                "/battery/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "OPERATOR"
+                        )
 
                         // Admin & Operator can update batteries
-                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/battery/**")
-                        .hasAnyRole("ADMIN", "OPERATOR")
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.PUT,
+                                "/battery/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "OPERATOR"
+                        )
 
-                        // Only Admin can delete batteries
-                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/battery/**")
-                        .hasRole("ADMIN")
+                        // Admin & Operator can delete batteries
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.DELETE,
+                                "/battery/**"
+                        ).hasAnyRole(
+                                "ADMIN",
+                                "OPERATOR"
+                        )
 
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
-
                 )
 
                 .addFilterBefore(
@@ -97,14 +123,11 @@ public class SecurityConfig {
             throws Exception {
 
         return configuration.getAuthenticationManager();
-
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
 
         return NoOpPasswordEncoder.getInstance();
-
     }
-
 }
