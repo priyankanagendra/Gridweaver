@@ -6,6 +6,7 @@ import BatteryList from "../components/BatteryList";
 import DashboardCards from "../components/DashboardCards";
 import BatteryChart from "../components/BatteryChart";
 import MapComponent from "../components/MapComponent";
+import EventLog from "../components/EventLog";
 
 import WebSocketService from "../services/WebSocketService";
 import AuthService from "../services/AuthService";
@@ -21,10 +22,8 @@ function Home() {
 
         // Check Login
         if (!AuthService.isLoggedIn()) {
-
             navigate("/login");
             return;
-
         }
 
         console.log("Connecting to WebSocket...");
@@ -39,9 +38,7 @@ function Home() {
         });
 
         return () => {
-
             WebSocketService.disconnect();
-
         };
 
     }, [navigate]);
@@ -73,10 +70,17 @@ function Home() {
 
             </div>
 
+            {/* Dashboard Cards */}
             <DashboardCards refresh={refresh} />
 
+            <br />
+
+            {/* Pie Chart */}
             <BatteryChart refresh={refresh} />
 
+            <br />
+
+            {/* Battery Form */}
             <BatteryForm
                 refresh={refresh}
                 setRefresh={setRefresh}
@@ -84,17 +88,27 @@ function Home() {
                 setSelectedBattery={setSelectedBattery}
             />
 
+            <br />
+
+            {/* Battery List */}
             <BatteryList
                 refresh={refresh}
                 setSelectedBattery={setSelectedBattery}
             />
 
+            <br />
+
+            {/* Map */}
             <MapComponent refresh={refresh} />
+
+            <br />
+
+            {/* Event Log */}
+            <EventLog />
 
         </div>
 
     );
-
 }
 
 export default Home;

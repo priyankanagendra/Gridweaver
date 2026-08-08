@@ -24,9 +24,19 @@ class WebSocketService {
 
                     if (message.body) {
 
-                        const battery = JSON.parse(message.body);
+                        try {
 
-                        onMessageReceived(battery);
+                            // Try to parse JSON (Battery Object)
+                            const data = JSON.parse(message.body);
+
+                            onMessageReceived(data);
+
+                        } catch (error) {
+
+                            // If not JSON, it is a Kafka String message
+                            onMessageReceived(message.body);
+
+                        }
 
                     }
 
@@ -39,6 +49,7 @@ class WebSocketService {
                 console.error("STOMP Error:", frame);
 
             }
+
         });
 
         this.client.activate();
